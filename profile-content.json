@@ -50,6 +50,13 @@
       "description": "Lakehouse layouts, data models and batch or streaming jobs. Understanding when incremental processing helps and how to recover after a failed run."
     }
   ],
+  "projects": [
+    {
+      "title": "Mini Lakehouse Quality Lab",
+      "description": "A reproducible DuckDB and Parquet example with data quality checks, quarantine, and idempotent batch ingestion.",
+      "url": "https://github.com/MertAErntrk/mini-lakehouse-quality-lab"
+    }
+  ],
   "links": [
     {"label": "Portfolio", "url": "https://mertalierntrk.dev/"},
     {"label": "GitHub", "url": "https://github.com/MertAErntrk"},
