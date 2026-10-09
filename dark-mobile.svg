@@ -6,215 +6,215 @@ text{font-family:Arial,Helvetica,sans-serif;letter-spacing:0;fill:#E6EDF3}
 .name{font-weight:700}.role,.prompt{fill:#22D3EE}.body,.muted{fill:#A8B3C1}
 .mono{font-family:Consolas,"Courier New",monospace}
 .motion{transform:none;transform-origin:0 0}.typed-char{visibility:visible}.portrait-image{transform:none}.scan-line,.type-cursor{display:none}
-@keyframes portrait-scan{0%{transform:scaleY(0)}16%,68%{transform:scaleY(1)}84%,100%{transform:scaleY(0)}}
-@keyframes scanner{0%{transform:translateY(0);visibility:visible}15.999%{transform:translateY(192px);visibility:visible}16%,67.999%{transform:translateY(192px);visibility:hidden}68%{transform:translateY(192px);visibility:visible}83.999%{transform:translateY(0);visibility:visible}84%,100%{transform:translateY(0);visibility:hidden}}
-@keyframes glyph-name-0{0%{visibility:hidden}0.5%{visibility:visible}84%,100%{visibility:hidden}}
-@keyframes glyph-name-1{0%{visibility:hidden}1.46875%{visibility:visible}83.03125%,100%{visibility:hidden}}
-@keyframes glyph-name-2{0%{visibility:hidden}2.4375%{visibility:visible}82.0625%,100%{visibility:hidden}}
-@keyframes glyph-name-3{0%{visibility:hidden}3.40625%{visibility:visible}81.09375%,100%{visibility:hidden}}
-@keyframes glyph-name-4{0%{visibility:hidden}4.375%{visibility:visible}80.125%,100%{visibility:hidden}}
-@keyframes glyph-name-5{0%{visibility:hidden}5.34375%{visibility:visible}79.15625%,100%{visibility:hidden}}
-@keyframes glyph-name-6{0%{visibility:hidden}6.3125%{visibility:visible}78.1875%,100%{visibility:hidden}}
-@keyframes glyph-name-7{0%{visibility:hidden}7.28125%{visibility:visible}77.21875%,100%{visibility:hidden}}
-@keyframes glyph-name-8{0%{visibility:hidden}8.25%{visibility:visible}76.25%,100%{visibility:hidden}}
-@keyframes glyph-name-9{0%{visibility:hidden}9.21875%{visibility:visible}75.28125%,100%{visibility:hidden}}
-@keyframes glyph-name-10{0%{visibility:hidden}10.1875%{visibility:visible}74.3125%,100%{visibility:hidden}}
-@keyframes glyph-name-11{0%{visibility:hidden}11.15625%{visibility:visible}73.34375%,100%{visibility:hidden}}
-@keyframes glyph-name-12{0%{visibility:hidden}12.125%{visibility:visible}72.375%,100%{visibility:hidden}}
-@keyframes glyph-name-13{0%{visibility:hidden}13.09375%{visibility:visible}71.40625%,100%{visibility:hidden}}
-@keyframes glyph-name-14{0%{visibility:hidden}14.0625%{visibility:visible}70.4375%,100%{visibility:hidden}}
-@keyframes glyph-name-15{0%{visibility:hidden}15.03125%{visibility:visible}69.46875%,100%{visibility:hidden}}
-@keyframes glyph-name-16{0%{visibility:hidden}16%{visibility:visible}68.5%,100%{visibility:hidden}}
-@keyframes glyph-role-0{0%{visibility:hidden}0.5%{visibility:visible}84%,100%{visibility:hidden}}
-@keyframes glyph-role-1{0%{visibility:hidden}1.411765%{visibility:visible}83.088235%,100%{visibility:hidden}}
-@keyframes glyph-role-2{0%{visibility:hidden}2.323529%{visibility:visible}82.176471%,100%{visibility:hidden}}
-@keyframes glyph-role-3{0%{visibility:hidden}3.235294%{visibility:visible}81.264706%,100%{visibility:hidden}}
-@keyframes glyph-role-4{0%{visibility:hidden}4.147059%{visibility:visible}80.352941%,100%{visibility:hidden}}
-@keyframes glyph-role-5{0%{visibility:hidden}5.058824%{visibility:visible}79.441176%,100%{visibility:hidden}}
-@keyframes glyph-role-6{0%{visibility:hidden}5.970588%{visibility:visible}78.529412%,100%{visibility:hidden}}
-@keyframes glyph-role-7{0%{visibility:hidden}6.882353%{visibility:visible}77.617647%,100%{visibility:hidden}}
-@keyframes glyph-role-8{0%{visibility:hidden}7.794118%{visibility:visible}76.705882%,100%{visibility:hidden}}
-@keyframes glyph-role-9{0%{visibility:hidden}8.705882%{visibility:visible}75.794118%,100%{visibility:hidden}}
-@keyframes glyph-role-10{0%{visibility:hidden}9.617647%{visibility:visible}74.882353%,100%{visibility:hidden}}
-@keyframes glyph-role-11{0%{visibility:hidden}10.529412%{visibility:visible}73.970588%,100%{visibility:hidden}}
-@keyframes glyph-role-12{0%{visibility:hidden}11.441176%{visibility:visible}73.058824%,100%{visibility:hidden}}
-@keyframes glyph-role-13{0%{visibility:hidden}12.352941%{visibility:visible}72.147059%,100%{visibility:hidden}}
-@keyframes glyph-role-14{0%{visibility:hidden}13.264706%{visibility:visible}71.235294%,100%{visibility:hidden}}
-@keyframes glyph-role-15{0%{visibility:hidden}14.176471%{visibility:visible}70.323529%,100%{visibility:hidden}}
-@keyframes glyph-role-16{0%{visibility:hidden}15.088235%{visibility:visible}69.411765%,100%{visibility:hidden}}
-@keyframes glyph-role-17{0%{visibility:hidden}16%{visibility:visible}68.5%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-0{0%{visibility:hidden}0.5%{visibility:visible}84%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-1{0%{visibility:hidden}1.145833%{visibility:visible}83.354167%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-2{0%{visibility:hidden}1.791667%{visibility:visible}82.708333%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-3{0%{visibility:hidden}2.4375%{visibility:visible}82.0625%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-4{0%{visibility:hidden}3.083333%{visibility:visible}81.416667%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-5{0%{visibility:hidden}3.729167%{visibility:visible}80.770833%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-6{0%{visibility:hidden}4.375%{visibility:visible}80.125%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-7{0%{visibility:hidden}5.020833%{visibility:visible}79.479167%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-8{0%{visibility:hidden}5.666667%{visibility:visible}78.833333%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-9{0%{visibility:hidden}6.3125%{visibility:visible}78.1875%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-10{0%{visibility:hidden}6.958333%{visibility:visible}77.541667%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-11{0%{visibility:hidden}7.604167%{visibility:visible}76.895833%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-12{0%{visibility:hidden}8.25%{visibility:visible}76.25%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-13{0%{visibility:hidden}8.895833%{visibility:visible}75.604167%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-14{0%{visibility:hidden}9.541667%{visibility:visible}74.958333%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-15{0%{visibility:hidden}10.1875%{visibility:visible}74.3125%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-16{0%{visibility:hidden}10.833333%{visibility:visible}73.666667%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-17{0%{visibility:hidden}11.479167%{visibility:visible}73.020833%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-18{0%{visibility:hidden}12.125%{visibility:visible}72.375%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-19{0%{visibility:hidden}12.770833%{visibility:visible}71.729167%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-20{0%{visibility:hidden}13.416667%{visibility:visible}71.083333%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-21{0%{visibility:hidden}14.0625%{visibility:visible}70.4375%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-22{0%{visibility:hidden}14.708333%{visibility:visible}69.791667%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-23{0%{visibility:hidden}15.354167%{visibility:visible}69.145833%,100%{visibility:hidden}}
-@keyframes glyph-summary-1-24{0%{visibility:hidden}16%{visibility:visible}68.5%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-0{0%{visibility:hidden}0.5%{visibility:visible}84%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-1{0%{visibility:hidden}1.074074%{visibility:visible}83.425926%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-2{0%{visibility:hidden}1.648148%{visibility:visible}82.851852%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-3{0%{visibility:hidden}2.222222%{visibility:visible}82.277778%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-4{0%{visibility:hidden}2.796296%{visibility:visible}81.703704%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-5{0%{visibility:hidden}3.37037%{visibility:visible}81.12963%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-6{0%{visibility:hidden}3.944444%{visibility:visible}80.555556%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-7{0%{visibility:hidden}4.518519%{visibility:visible}79.981481%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-8{0%{visibility:hidden}5.092593%{visibility:visible}79.407407%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-9{0%{visibility:hidden}5.666667%{visibility:visible}78.833333%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-10{0%{visibility:hidden}6.240741%{visibility:visible}78.259259%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-11{0%{visibility:hidden}6.814815%{visibility:visible}77.685185%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-12{0%{visibility:hidden}7.388889%{visibility:visible}77.111111%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-13{0%{visibility:hidden}7.962963%{visibility:visible}76.537037%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-14{0%{visibility:hidden}8.537037%{visibility:visible}75.962963%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-15{0%{visibility:hidden}9.111111%{visibility:visible}75.388889%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-16{0%{visibility:hidden}9.685185%{visibility:visible}74.814815%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-17{0%{visibility:hidden}10.259259%{visibility:visible}74.240741%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-18{0%{visibility:hidden}10.833333%{visibility:visible}73.666667%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-19{0%{visibility:hidden}11.407407%{visibility:visible}73.092593%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-20{0%{visibility:hidden}11.981481%{visibility:visible}72.518519%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-21{0%{visibility:hidden}12.555556%{visibility:visible}71.944444%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-22{0%{visibility:hidden}13.12963%{visibility:visible}71.37037%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-23{0%{visibility:hidden}13.703704%{visibility:visible}70.796296%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-24{0%{visibility:hidden}14.277778%{visibility:visible}70.222222%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-25{0%{visibility:hidden}14.851852%{visibility:visible}69.648148%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-26{0%{visibility:hidden}15.425926%{visibility:visible}69.074074%,100%{visibility:hidden}}
-@keyframes glyph-summary-2-27{0%{visibility:hidden}16%{visibility:visible}68.5%,100%{visibility:hidden}}
-@keyframes glyph-meta-0{0%{visibility:hidden}0.5%{visibility:visible}84%,100%{visibility:hidden}}
-@keyframes glyph-meta-1{0%{visibility:hidden}1.909091%{visibility:visible}82.590909%,100%{visibility:hidden}}
-@keyframes glyph-meta-2{0%{visibility:hidden}3.318182%{visibility:visible}81.181818%,100%{visibility:hidden}}
-@keyframes glyph-meta-3{0%{visibility:hidden}4.727273%{visibility:visible}79.772727%,100%{visibility:hidden}}
-@keyframes glyph-meta-4{0%{visibility:hidden}6.136364%{visibility:visible}78.363636%,100%{visibility:hidden}}
-@keyframes glyph-meta-5{0%{visibility:hidden}7.545455%{visibility:visible}76.954545%,100%{visibility:hidden}}
-@keyframes glyph-meta-6{0%{visibility:hidden}8.954545%{visibility:visible}75.545455%,100%{visibility:hidden}}
-@keyframes glyph-meta-7{0%{visibility:hidden}10.363636%{visibility:visible}74.136364%,100%{visibility:hidden}}
-@keyframes glyph-meta-8{0%{visibility:hidden}11.772727%{visibility:visible}72.727273%,100%{visibility:hidden}}
-@keyframes glyph-meta-9{0%{visibility:hidden}13.181818%{visibility:visible}71.318182%,100%{visibility:hidden}}
-@keyframes glyph-meta-10{0%{visibility:hidden}14.590909%{visibility:visible}69.909091%,100%{visibility:hidden}}
-@keyframes glyph-meta-11{0%{visibility:hidden}16%{visibility:visible}68.5%,100%{visibility:hidden}}
-@keyframes role-status{0%,84%,100%{visibility:hidden}.5%{visibility:visible}}
-@keyframes caret-travel{0%{transform:translateX(0px)}0.5%{transform:translateX(13.2px)}1.411765%{transform:translateX(26.4px)}2.323529%{transform:translateX(39.6px)}3.235294%{transform:translateX(52.8px)}4.147059%{transform:translateX(66px)}5.058824%{transform:translateX(79.2px)}5.970588%{transform:translateX(92.4px)}6.882353%{transform:translateX(105.6px)}7.794118%{transform:translateX(118.8px)}8.705882%{transform:translateX(132px)}9.617647%{transform:translateX(145.2px)}10.529412%{transform:translateX(158.4px)}11.441176%{transform:translateX(171.6px)}12.352941%{transform:translateX(184.8px)}13.264706%{transform:translateX(198px)}14.176471%{transform:translateX(211.2px)}15.088235%{transform:translateX(224.4px)}16%{transform:translateX(237.6px)}68.5%{transform:translateX(224.4px)}69.411765%{transform:translateX(211.2px)}70.323529%{transform:translateX(198px)}71.235294%{transform:translateX(184.8px)}72.147059%{transform:translateX(171.6px)}73.058824%{transform:translateX(158.4px)}73.970588%{transform:translateX(145.2px)}74.882353%{transform:translateX(132px)}75.794118%{transform:translateX(118.8px)}76.705882%{transform:translateX(105.6px)}77.617647%{transform:translateX(92.4px)}78.529412%{transform:translateX(79.2px)}79.441176%{transform:translateX(66px)}80.352941%{transform:translateX(52.8px)}81.264706%{transform:translateX(39.6px)}82.176471%{transform:translateX(26.4px)}83.088235%{transform:translateX(13.2px)}84%{transform:translateX(0px)}100%{transform:translateX(0px)}}
+@keyframes portrait-scan{0%{transform:scaleY(0)}20.37037037%,68.51851852%{transform:scaleY(1)}88.88888889%,100%{transform:scaleY(0)}}
+@keyframes scanner{0%{transform:translateY(0);visibility:visible}20.36944444%{transform:translateY(192px);visibility:visible}20.37037037%,68.51759259%{transform:translateY(192px);visibility:hidden}68.51851852%{transform:translateY(192px);visibility:visible}88.88796296%{transform:translateY(0);visibility:visible}88.88888889%,100%{transform:translateY(0);visibility:hidden}}
+@keyframes glyph-name-0{0%{visibility:visible}88.88888889%,100%{visibility:hidden}}
+@keyframes glyph-name-1{0%{visibility:hidden}1.27314815%{visibility:visible}87.61574074%,100%{visibility:hidden}}
+@keyframes glyph-name-2{0%{visibility:hidden}2.5462963%{visibility:visible}86.34259259%,100%{visibility:hidden}}
+@keyframes glyph-name-3{0%{visibility:hidden}3.81944444%{visibility:visible}85.06944444%,100%{visibility:hidden}}
+@keyframes glyph-name-4{0%{visibility:hidden}5.09259259%{visibility:visible}83.7962963%,100%{visibility:hidden}}
+@keyframes glyph-name-5{0%{visibility:hidden}6.36574074%{visibility:visible}82.52314815%,100%{visibility:hidden}}
+@keyframes glyph-name-6{0%{visibility:hidden}7.63888889%{visibility:visible}81.25%,100%{visibility:hidden}}
+@keyframes glyph-name-7{0%{visibility:hidden}8.91203704%{visibility:visible}79.97685185%,100%{visibility:hidden}}
+@keyframes glyph-name-8{0%{visibility:hidden}10.18518519%{visibility:visible}78.7037037%,100%{visibility:hidden}}
+@keyframes glyph-name-9{0%{visibility:hidden}11.45833333%{visibility:visible}77.43055556%,100%{visibility:hidden}}
+@keyframes glyph-name-10{0%{visibility:hidden}12.73148148%{visibility:visible}76.15740741%,100%{visibility:hidden}}
+@keyframes glyph-name-11{0%{visibility:hidden}14.00462963%{visibility:visible}74.88425926%,100%{visibility:hidden}}
+@keyframes glyph-name-12{0%{visibility:hidden}15.27777778%{visibility:visible}73.61111111%,100%{visibility:hidden}}
+@keyframes glyph-name-13{0%{visibility:hidden}16.55092593%{visibility:visible}72.33796296%,100%{visibility:hidden}}
+@keyframes glyph-name-14{0%{visibility:hidden}17.82407407%{visibility:visible}71.06481481%,100%{visibility:hidden}}
+@keyframes glyph-name-15{0%{visibility:hidden}19.09722222%{visibility:visible}69.79166667%,100%{visibility:hidden}}
+@keyframes glyph-name-16{0%{visibility:hidden}20.37037037%{visibility:visible}68.51851852%,100%{visibility:hidden}}
+@keyframes glyph-role-0{0%{visibility:visible}88.88888889%,100%{visibility:hidden}}
+@keyframes glyph-role-1{0%{visibility:hidden}1.19825708%{visibility:visible}87.69063181%,100%{visibility:hidden}}
+@keyframes glyph-role-2{0%{visibility:hidden}2.39651416%{visibility:visible}86.49237473%,100%{visibility:hidden}}
+@keyframes glyph-role-3{0%{visibility:hidden}3.59477124%{visibility:visible}85.29411765%,100%{visibility:hidden}}
+@keyframes glyph-role-4{0%{visibility:hidden}4.79302832%{visibility:visible}84.09586057%,100%{visibility:hidden}}
+@keyframes glyph-role-5{0%{visibility:hidden}5.9912854%{visibility:visible}82.89760349%,100%{visibility:hidden}}
+@keyframes glyph-role-6{0%{visibility:hidden}7.18954248%{visibility:visible}81.69934641%,100%{visibility:hidden}}
+@keyframes glyph-role-7{0%{visibility:hidden}8.38779956%{visibility:visible}80.50108932%,100%{visibility:hidden}}
+@keyframes glyph-role-8{0%{visibility:hidden}9.58605664%{visibility:visible}79.30283224%,100%{visibility:hidden}}
+@keyframes glyph-role-9{0%{visibility:hidden}10.78431373%{visibility:visible}78.10457516%,100%{visibility:hidden}}
+@keyframes glyph-role-10{0%{visibility:hidden}11.98257081%{visibility:visible}76.90631808%,100%{visibility:hidden}}
+@keyframes glyph-role-11{0%{visibility:hidden}13.18082789%{visibility:visible}75.708061%,100%{visibility:hidden}}
+@keyframes glyph-role-12{0%{visibility:hidden}14.37908497%{visibility:visible}74.50980392%,100%{visibility:hidden}}
+@keyframes glyph-role-13{0%{visibility:hidden}15.57734205%{visibility:visible}73.31154684%,100%{visibility:hidden}}
+@keyframes glyph-role-14{0%{visibility:hidden}16.77559913%{visibility:visible}72.11328976%,100%{visibility:hidden}}
+@keyframes glyph-role-15{0%{visibility:hidden}17.97385621%{visibility:visible}70.91503268%,100%{visibility:hidden}}
+@keyframes glyph-role-16{0%{visibility:hidden}19.17211329%{visibility:visible}69.7167756%,100%{visibility:hidden}}
+@keyframes glyph-role-17{0%{visibility:hidden}20.37037037%{visibility:visible}68.51851852%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-0{0%{visibility:visible}88.88888889%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-1{0%{visibility:hidden}0.84876543%{visibility:visible}88.04012346%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-2{0%{visibility:hidden}1.69753086%{visibility:visible}87.19135802%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-3{0%{visibility:hidden}2.5462963%{visibility:visible}86.34259259%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-4{0%{visibility:hidden}3.39506173%{visibility:visible}85.49382716%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-5{0%{visibility:hidden}4.24382716%{visibility:visible}84.64506173%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-6{0%{visibility:hidden}5.09259259%{visibility:visible}83.7962963%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-7{0%{visibility:hidden}5.94135802%{visibility:visible}82.94753086%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-8{0%{visibility:hidden}6.79012346%{visibility:visible}82.09876543%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-9{0%{visibility:hidden}7.63888889%{visibility:visible}81.25%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-10{0%{visibility:hidden}8.48765432%{visibility:visible}80.40123457%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-11{0%{visibility:hidden}9.33641975%{visibility:visible}79.55246914%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-12{0%{visibility:hidden}10.18518519%{visibility:visible}78.7037037%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-13{0%{visibility:hidden}11.03395062%{visibility:visible}77.85493827%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-14{0%{visibility:hidden}11.88271605%{visibility:visible}77.00617284%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-15{0%{visibility:hidden}12.73148148%{visibility:visible}76.15740741%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-16{0%{visibility:hidden}13.58024691%{visibility:visible}75.30864198%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-17{0%{visibility:hidden}14.42901235%{visibility:visible}74.45987654%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-18{0%{visibility:hidden}15.27777778%{visibility:visible}73.61111111%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-19{0%{visibility:hidden}16.12654321%{visibility:visible}72.76234568%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-20{0%{visibility:hidden}16.97530864%{visibility:visible}71.91358025%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-21{0%{visibility:hidden}17.82407407%{visibility:visible}71.06481481%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-22{0%{visibility:hidden}18.67283951%{visibility:visible}70.21604938%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-23{0%{visibility:hidden}19.52160494%{visibility:visible}69.36728395%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-24{0%{visibility:hidden}20.37037037%{visibility:visible}68.51851852%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-0{0%{visibility:visible}88.88888889%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-1{0%{visibility:hidden}0.75445816%{visibility:visible}88.13443073%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-2{0%{visibility:hidden}1.50891632%{visibility:visible}87.37997257%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-3{0%{visibility:hidden}2.26337449%{visibility:visible}86.6255144%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-4{0%{visibility:hidden}3.01783265%{visibility:visible}85.87105624%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-5{0%{visibility:hidden}3.77229081%{visibility:visible}85.11659808%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-6{0%{visibility:hidden}4.52674897%{visibility:visible}84.36213992%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-7{0%{visibility:hidden}5.28120713%{visibility:visible}83.60768176%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-8{0%{visibility:hidden}6.03566529%{visibility:visible}82.85322359%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-9{0%{visibility:hidden}6.79012346%{visibility:visible}82.09876543%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-10{0%{visibility:hidden}7.54458162%{visibility:visible}81.34430727%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-11{0%{visibility:hidden}8.29903978%{visibility:visible}80.58984911%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-12{0%{visibility:hidden}9.05349794%{visibility:visible}79.83539095%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-13{0%{visibility:hidden}9.8079561%{visibility:visible}79.08093278%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-14{0%{visibility:hidden}10.56241427%{visibility:visible}78.32647462%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-15{0%{visibility:hidden}11.31687243%{visibility:visible}77.57201646%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-16{0%{visibility:hidden}12.07133059%{visibility:visible}76.8175583%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-17{0%{visibility:hidden}12.82578875%{visibility:visible}76.06310014%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-18{0%{visibility:hidden}13.58024691%{visibility:visible}75.30864198%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-19{0%{visibility:hidden}14.33470508%{visibility:visible}74.55418381%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-20{0%{visibility:hidden}15.08916324%{visibility:visible}73.79972565%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-21{0%{visibility:hidden}15.8436214%{visibility:visible}73.04526749%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-22{0%{visibility:hidden}16.59807956%{visibility:visible}72.29080933%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-23{0%{visibility:hidden}17.35253772%{visibility:visible}71.53635117%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-24{0%{visibility:hidden}18.10699588%{visibility:visible}70.781893%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-25{0%{visibility:hidden}18.86145405%{visibility:visible}70.02743484%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-26{0%{visibility:hidden}19.61591221%{visibility:visible}69.27297668%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-27{0%{visibility:hidden}20.37037037%{visibility:visible}68.51851852%,100%{visibility:hidden}}
+@keyframes glyph-meta-0{0%{visibility:visible}88.88888889%,100%{visibility:hidden}}
+@keyframes glyph-meta-1{0%{visibility:hidden}1.85185185%{visibility:visible}87.03703704%,100%{visibility:hidden}}
+@keyframes glyph-meta-2{0%{visibility:hidden}3.7037037%{visibility:visible}85.18518519%,100%{visibility:hidden}}
+@keyframes glyph-meta-3{0%{visibility:hidden}5.55555556%{visibility:visible}83.33333333%,100%{visibility:hidden}}
+@keyframes glyph-meta-4{0%{visibility:hidden}7.40740741%{visibility:visible}81.48148148%,100%{visibility:hidden}}
+@keyframes glyph-meta-5{0%{visibility:hidden}9.25925926%{visibility:visible}79.62962963%,100%{visibility:hidden}}
+@keyframes glyph-meta-6{0%{visibility:hidden}11.11111111%{visibility:visible}77.77777778%,100%{visibility:hidden}}
+@keyframes glyph-meta-7{0%{visibility:hidden}12.96296296%{visibility:visible}75.92592593%,100%{visibility:hidden}}
+@keyframes glyph-meta-8{0%{visibility:hidden}14.81481481%{visibility:visible}74.07407407%,100%{visibility:hidden}}
+@keyframes glyph-meta-9{0%{visibility:hidden}16.66666667%{visibility:visible}72.22222222%,100%{visibility:hidden}}
+@keyframes glyph-meta-10{0%{visibility:hidden}18.51851852%{visibility:visible}70.37037037%,100%{visibility:hidden}}
+@keyframes glyph-meta-11{0%{visibility:hidden}20.37037037%{visibility:visible}68.51851852%,100%{visibility:hidden}}
+@keyframes role-status{0%{visibility:visible}88.88888889%,100%{visibility:hidden}}
+@keyframes caret-travel{0%{transform:translateX(13.2px)}1.19825708%{transform:translateX(26.4px)}2.39651416%{transform:translateX(39.6px)}3.59477124%{transform:translateX(52.8px)}4.79302832%{transform:translateX(66px)}5.9912854%{transform:translateX(79.2px)}7.18954248%{transform:translateX(92.4px)}8.38779956%{transform:translateX(105.6px)}9.58605664%{transform:translateX(118.8px)}10.78431373%{transform:translateX(132px)}11.98257081%{transform:translateX(145.2px)}13.18082789%{transform:translateX(158.4px)}14.37908497%{transform:translateX(171.6px)}15.57734205%{transform:translateX(184.8px)}16.77559913%{transform:translateX(198px)}17.97385621%{transform:translateX(211.2px)}19.17211329%{transform:translateX(224.4px)}20.37037037%{transform:translateX(237.6px)}68.51851852%{transform:translateX(224.4px)}69.7167756%{transform:translateX(211.2px)}70.91503268%{transform:translateX(198px)}72.11328976%{transform:translateX(184.8px)}73.31154684%{transform:translateX(171.6px)}74.50980392%{transform:translateX(158.4px)}75.708061%{transform:translateX(145.2px)}76.90631808%{transform:translateX(132px)}78.10457516%{transform:translateX(118.8px)}79.30283224%{transform:translateX(105.6px)}80.50108932%{transform:translateX(92.4px)}81.69934641%{transform:translateX(79.2px)}82.89760349%{transform:translateX(66px)}84.09586057%{transform:translateX(52.8px)}85.29411765%{transform:translateX(39.6px)}86.49237473%{transform:translateX(26.4px)}87.69063181%{transform:translateX(13.2px)}88.88888889%{transform:translateX(0px)}100%{transform:translateX(0px)}}
 @keyframes caret-blink{0%,49.999%{transform:scaleY(1)}50%,100%{transform:scaleY(0)}}
 @media(prefers-reduced-motion:no-preference){
-.portrait-window{animation:portrait-scan 10s linear infinite}.scan-line{display:block;animation:scanner 10s linear infinite}
-.char-name-0{animation:glyph-name-0 10s step-end infinite}
-.char-name-1{animation:glyph-name-1 10s step-end infinite}
-.char-name-2{animation:glyph-name-2 10s step-end infinite}
-.char-name-3{animation:glyph-name-3 10s step-end infinite}
-.char-name-4{animation:glyph-name-4 10s step-end infinite}
-.char-name-5{animation:glyph-name-5 10s step-end infinite}
-.char-name-6{animation:glyph-name-6 10s step-end infinite}
-.char-name-7{animation:glyph-name-7 10s step-end infinite}
-.char-name-8{animation:glyph-name-8 10s step-end infinite}
-.char-name-9{animation:glyph-name-9 10s step-end infinite}
-.char-name-10{animation:glyph-name-10 10s step-end infinite}
-.char-name-11{animation:glyph-name-11 10s step-end infinite}
-.char-name-12{animation:glyph-name-12 10s step-end infinite}
-.char-name-13{animation:glyph-name-13 10s step-end infinite}
-.char-name-14{animation:glyph-name-14 10s step-end infinite}
-.char-name-15{animation:glyph-name-15 10s step-end infinite}
-.char-name-16{animation:glyph-name-16 10s step-end infinite}
-.char-role-0{animation:glyph-role-0 10s step-end infinite}
-.char-role-1{animation:glyph-role-1 10s step-end infinite}
-.char-role-2{animation:glyph-role-2 10s step-end infinite}
-.char-role-3{animation:glyph-role-3 10s step-end infinite}
-.char-role-4{animation:glyph-role-4 10s step-end infinite}
-.char-role-5{animation:glyph-role-5 10s step-end infinite}
-.char-role-6{animation:glyph-role-6 10s step-end infinite}
-.char-role-7{animation:glyph-role-7 10s step-end infinite}
-.char-role-8{animation:glyph-role-8 10s step-end infinite}
-.char-role-9{animation:glyph-role-9 10s step-end infinite}
-.char-role-10{animation:glyph-role-10 10s step-end infinite}
-.char-role-11{animation:glyph-role-11 10s step-end infinite}
-.char-role-12{animation:glyph-role-12 10s step-end infinite}
-.char-role-13{animation:glyph-role-13 10s step-end infinite}
-.char-role-14{animation:glyph-role-14 10s step-end infinite}
-.char-role-15{animation:glyph-role-15 10s step-end infinite}
-.char-role-16{animation:glyph-role-16 10s step-end infinite}
-.char-role-17{animation:glyph-role-17 10s step-end infinite}
-.char-summary-1-0{animation:glyph-summary-1-0 10s step-end infinite}
-.char-summary-1-1{animation:glyph-summary-1-1 10s step-end infinite}
-.char-summary-1-2{animation:glyph-summary-1-2 10s step-end infinite}
-.char-summary-1-3{animation:glyph-summary-1-3 10s step-end infinite}
-.char-summary-1-4{animation:glyph-summary-1-4 10s step-end infinite}
-.char-summary-1-5{animation:glyph-summary-1-5 10s step-end infinite}
-.char-summary-1-6{animation:glyph-summary-1-6 10s step-end infinite}
-.char-summary-1-7{animation:glyph-summary-1-7 10s step-end infinite}
-.char-summary-1-8{animation:glyph-summary-1-8 10s step-end infinite}
-.char-summary-1-9{animation:glyph-summary-1-9 10s step-end infinite}
-.char-summary-1-10{animation:glyph-summary-1-10 10s step-end infinite}
-.char-summary-1-11{animation:glyph-summary-1-11 10s step-end infinite}
-.char-summary-1-12{animation:glyph-summary-1-12 10s step-end infinite}
-.char-summary-1-13{animation:glyph-summary-1-13 10s step-end infinite}
-.char-summary-1-14{animation:glyph-summary-1-14 10s step-end infinite}
-.char-summary-1-15{animation:glyph-summary-1-15 10s step-end infinite}
-.char-summary-1-16{animation:glyph-summary-1-16 10s step-end infinite}
-.char-summary-1-17{animation:glyph-summary-1-17 10s step-end infinite}
-.char-summary-1-18{animation:glyph-summary-1-18 10s step-end infinite}
-.char-summary-1-19{animation:glyph-summary-1-19 10s step-end infinite}
-.char-summary-1-20{animation:glyph-summary-1-20 10s step-end infinite}
-.char-summary-1-21{animation:glyph-summary-1-21 10s step-end infinite}
-.char-summary-1-22{animation:glyph-summary-1-22 10s step-end infinite}
-.char-summary-1-23{animation:glyph-summary-1-23 10s step-end infinite}
-.char-summary-1-24{animation:glyph-summary-1-24 10s step-end infinite}
-.char-summary-2-0{animation:glyph-summary-2-0 10s step-end infinite}
-.char-summary-2-1{animation:glyph-summary-2-1 10s step-end infinite}
-.char-summary-2-2{animation:glyph-summary-2-2 10s step-end infinite}
-.char-summary-2-3{animation:glyph-summary-2-3 10s step-end infinite}
-.char-summary-2-4{animation:glyph-summary-2-4 10s step-end infinite}
-.char-summary-2-5{animation:glyph-summary-2-5 10s step-end infinite}
-.char-summary-2-6{animation:glyph-summary-2-6 10s step-end infinite}
-.char-summary-2-7{animation:glyph-summary-2-7 10s step-end infinite}
-.char-summary-2-8{animation:glyph-summary-2-8 10s step-end infinite}
-.char-summary-2-9{animation:glyph-summary-2-9 10s step-end infinite}
-.char-summary-2-10{animation:glyph-summary-2-10 10s step-end infinite}
-.char-summary-2-11{animation:glyph-summary-2-11 10s step-end infinite}
-.char-summary-2-12{animation:glyph-summary-2-12 10s step-end infinite}
-.char-summary-2-13{animation:glyph-summary-2-13 10s step-end infinite}
-.char-summary-2-14{animation:glyph-summary-2-14 10s step-end infinite}
-.char-summary-2-15{animation:glyph-summary-2-15 10s step-end infinite}
-.char-summary-2-16{animation:glyph-summary-2-16 10s step-end infinite}
-.char-summary-2-17{animation:glyph-summary-2-17 10s step-end infinite}
-.char-summary-2-18{animation:glyph-summary-2-18 10s step-end infinite}
-.char-summary-2-19{animation:glyph-summary-2-19 10s step-end infinite}
-.char-summary-2-20{animation:glyph-summary-2-20 10s step-end infinite}
-.char-summary-2-21{animation:glyph-summary-2-21 10s step-end infinite}
-.char-summary-2-22{animation:glyph-summary-2-22 10s step-end infinite}
-.char-summary-2-23{animation:glyph-summary-2-23 10s step-end infinite}
-.char-summary-2-24{animation:glyph-summary-2-24 10s step-end infinite}
-.char-summary-2-25{animation:glyph-summary-2-25 10s step-end infinite}
-.char-summary-2-26{animation:glyph-summary-2-26 10s step-end infinite}
-.char-summary-2-27{animation:glyph-summary-2-27 10s step-end infinite}
-.char-meta-0{animation:glyph-meta-0 10s step-end infinite}
-.char-meta-1{animation:glyph-meta-1 10s step-end infinite}
-.char-meta-2{animation:glyph-meta-2 10s step-end infinite}
-.char-meta-3{animation:glyph-meta-3 10s step-end infinite}
-.char-meta-4{animation:glyph-meta-4 10s step-end infinite}
-.char-meta-5{animation:glyph-meta-5 10s step-end infinite}
-.char-meta-6{animation:glyph-meta-6 10s step-end infinite}
-.char-meta-7{animation:glyph-meta-7 10s step-end infinite}
-.char-meta-8{animation:glyph-meta-8 10s step-end infinite}
-.char-meta-9{animation:glyph-meta-9 10s step-end infinite}
-.char-meta-10{animation:glyph-meta-10 10s step-end infinite}
-.char-meta-11{animation:glyph-meta-11 10s step-end infinite}
-.type-status{animation:role-status 10s step-end infinite}
-.type-cursor{display:block}.cursor-travel{animation:caret-travel 10s step-end infinite}
+.portrait-window{animation:portrait-scan 10.8s linear infinite}.scan-line{display:block;animation:scanner 10.8s linear infinite}
+.char-name-0{animation:glyph-name-0 10.8s step-end infinite}
+.char-name-1{animation:glyph-name-1 10.8s step-end infinite}
+.char-name-2{animation:glyph-name-2 10.8s step-end infinite}
+.char-name-3{animation:glyph-name-3 10.8s step-end infinite}
+.char-name-4{animation:glyph-name-4 10.8s step-end infinite}
+.char-name-5{animation:glyph-name-5 10.8s step-end infinite}
+.char-name-6{animation:glyph-name-6 10.8s step-end infinite}
+.char-name-7{animation:glyph-name-7 10.8s step-end infinite}
+.char-name-8{animation:glyph-name-8 10.8s step-end infinite}
+.char-name-9{animation:glyph-name-9 10.8s step-end infinite}
+.char-name-10{animation:glyph-name-10 10.8s step-end infinite}
+.char-name-11{animation:glyph-name-11 10.8s step-end infinite}
+.char-name-12{animation:glyph-name-12 10.8s step-end infinite}
+.char-name-13{animation:glyph-name-13 10.8s step-end infinite}
+.char-name-14{animation:glyph-name-14 10.8s step-end infinite}
+.char-name-15{animation:glyph-name-15 10.8s step-end infinite}
+.char-name-16{animation:glyph-name-16 10.8s step-end infinite}
+.char-role-0{animation:glyph-role-0 10.8s step-end infinite}
+.char-role-1{animation:glyph-role-1 10.8s step-end infinite}
+.char-role-2{animation:glyph-role-2 10.8s step-end infinite}
+.char-role-3{animation:glyph-role-3 10.8s step-end infinite}
+.char-role-4{animation:glyph-role-4 10.8s step-end infinite}
+.char-role-5{animation:glyph-role-5 10.8s step-end infinite}
+.char-role-6{animation:glyph-role-6 10.8s step-end infinite}
+.char-role-7{animation:glyph-role-7 10.8s step-end infinite}
+.char-role-8{animation:glyph-role-8 10.8s step-end infinite}
+.char-role-9{animation:glyph-role-9 10.8s step-end infinite}
+.char-role-10{animation:glyph-role-10 10.8s step-end infinite}
+.char-role-11{animation:glyph-role-11 10.8s step-end infinite}
+.char-role-12{animation:glyph-role-12 10.8s step-end infinite}
+.char-role-13{animation:glyph-role-13 10.8s step-end infinite}
+.char-role-14{animation:glyph-role-14 10.8s step-end infinite}
+.char-role-15{animation:glyph-role-15 10.8s step-end infinite}
+.char-role-16{animation:glyph-role-16 10.8s step-end infinite}
+.char-role-17{animation:glyph-role-17 10.8s step-end infinite}
+.char-summary-1-0{animation:glyph-summary-1-0 10.8s step-end infinite}
+.char-summary-1-1{animation:glyph-summary-1-1 10.8s step-end infinite}
+.char-summary-1-2{animation:glyph-summary-1-2 10.8s step-end infinite}
+.char-summary-1-3{animation:glyph-summary-1-3 10.8s step-end infinite}
+.char-summary-1-4{animation:glyph-summary-1-4 10.8s step-end infinite}
+.char-summary-1-5{animation:glyph-summary-1-5 10.8s step-end infinite}
+.char-summary-1-6{animation:glyph-summary-1-6 10.8s step-end infinite}
+.char-summary-1-7{animation:glyph-summary-1-7 10.8s step-end infinite}
+.char-summary-1-8{animation:glyph-summary-1-8 10.8s step-end infinite}
+.char-summary-1-9{animation:glyph-summary-1-9 10.8s step-end infinite}
+.char-summary-1-10{animation:glyph-summary-1-10 10.8s step-end infinite}
+.char-summary-1-11{animation:glyph-summary-1-11 10.8s step-end infinite}
+.char-summary-1-12{animation:glyph-summary-1-12 10.8s step-end infinite}
+.char-summary-1-13{animation:glyph-summary-1-13 10.8s step-end infinite}
+.char-summary-1-14{animation:glyph-summary-1-14 10.8s step-end infinite}
+.char-summary-1-15{animation:glyph-summary-1-15 10.8s step-end infinite}
+.char-summary-1-16{animation:glyph-summary-1-16 10.8s step-end infinite}
+.char-summary-1-17{animation:glyph-summary-1-17 10.8s step-end infinite}
+.char-summary-1-18{animation:glyph-summary-1-18 10.8s step-end infinite}
+.char-summary-1-19{animation:glyph-summary-1-19 10.8s step-end infinite}
+.char-summary-1-20{animation:glyph-summary-1-20 10.8s step-end infinite}
+.char-summary-1-21{animation:glyph-summary-1-21 10.8s step-end infinite}
+.char-summary-1-22{animation:glyph-summary-1-22 10.8s step-end infinite}
+.char-summary-1-23{animation:glyph-summary-1-23 10.8s step-end infinite}
+.char-summary-1-24{animation:glyph-summary-1-24 10.8s step-end infinite}
+.char-summary-2-0{animation:glyph-summary-2-0 10.8s step-end infinite}
+.char-summary-2-1{animation:glyph-summary-2-1 10.8s step-end infinite}
+.char-summary-2-2{animation:glyph-summary-2-2 10.8s step-end infinite}
+.char-summary-2-3{animation:glyph-summary-2-3 10.8s step-end infinite}
+.char-summary-2-4{animation:glyph-summary-2-4 10.8s step-end infinite}
+.char-summary-2-5{animation:glyph-summary-2-5 10.8s step-end infinite}
+.char-summary-2-6{animation:glyph-summary-2-6 10.8s step-end infinite}
+.char-summary-2-7{animation:glyph-summary-2-7 10.8s step-end infinite}
+.char-summary-2-8{animation:glyph-summary-2-8 10.8s step-end infinite}
+.char-summary-2-9{animation:glyph-summary-2-9 10.8s step-end infinite}
+.char-summary-2-10{animation:glyph-summary-2-10 10.8s step-end infinite}
+.char-summary-2-11{animation:glyph-summary-2-11 10.8s step-end infinite}
+.char-summary-2-12{animation:glyph-summary-2-12 10.8s step-end infinite}
+.char-summary-2-13{animation:glyph-summary-2-13 10.8s step-end infinite}
+.char-summary-2-14{animation:glyph-summary-2-14 10.8s step-end infinite}
+.char-summary-2-15{animation:glyph-summary-2-15 10.8s step-end infinite}
+.char-summary-2-16{animation:glyph-summary-2-16 10.8s step-end infinite}
+.char-summary-2-17{animation:glyph-summary-2-17 10.8s step-end infinite}
+.char-summary-2-18{animation:glyph-summary-2-18 10.8s step-end infinite}
+.char-summary-2-19{animation:glyph-summary-2-19 10.8s step-end infinite}
+.char-summary-2-20{animation:glyph-summary-2-20 10.8s step-end infinite}
+.char-summary-2-21{animation:glyph-summary-2-21 10.8s step-end infinite}
+.char-summary-2-22{animation:glyph-summary-2-22 10.8s step-end infinite}
+.char-summary-2-23{animation:glyph-summary-2-23 10.8s step-end infinite}
+.char-summary-2-24{animation:glyph-summary-2-24 10.8s step-end infinite}
+.char-summary-2-25{animation:glyph-summary-2-25 10.8s step-end infinite}
+.char-summary-2-26{animation:glyph-summary-2-26 10.8s step-end infinite}
+.char-summary-2-27{animation:glyph-summary-2-27 10.8s step-end infinite}
+.char-meta-0{animation:glyph-meta-0 10.8s step-end infinite}
+.char-meta-1{animation:glyph-meta-1 10.8s step-end infinite}
+.char-meta-2{animation:glyph-meta-2 10.8s step-end infinite}
+.char-meta-3{animation:glyph-meta-3 10.8s step-end infinite}
+.char-meta-4{animation:glyph-meta-4 10.8s step-end infinite}
+.char-meta-5{animation:glyph-meta-5 10.8s step-end infinite}
+.char-meta-6{animation:glyph-meta-6 10.8s step-end infinite}
+.char-meta-7{animation:glyph-meta-7 10.8s step-end infinite}
+.char-meta-8{animation:glyph-meta-8 10.8s step-end infinite}
+.char-meta-9{animation:glyph-meta-9 10.8s step-end infinite}
+.char-meta-10{animation:glyph-meta-10 10.8s step-end infinite}
+.char-meta-11{animation:glyph-meta-11 10.8s step-end infinite}
+.type-status{animation:role-status 10.8s step-end infinite}
+.type-cursor{display:block}.cursor-travel{animation:caret-travel 10.8s step-end infinite}
 .cursor-blink{animation:caret-blink 1s steps(1,end) infinite}
 }
 @media(prefers-reduced-motion:reduce){.motion{animation:none;transform:none}.scan-line,.type-cursor{display:none}}

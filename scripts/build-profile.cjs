@@ -9,6 +9,12 @@ const palettes = {
   dark: { bg: '#0B0F14', fg: '#E6EDF3', muted: '#A8B3C1', accent: '#22D3EE', border: '#34414E', empty: '#111820' },
   light: { bg: '#F8FAFC', fg: '#0F172A', muted: '#475569', accent: '#0E7490', border: '#B6C4D0', empty: '#EAF0F4' },
 };
+const timing = { reveal: 2200, hold: 5200, erase: 2200, idle: 1200 };
+const eraseAt = timing.reveal + timing.hold;
+const emptyAt = eraseAt + timing.erase;
+const cycleMs = emptyAt + timing.idle;
+const percent = milliseconds => Number((100 * milliseconds / cycleMs).toFixed(8));
+const cycleSeconds = cycleMs / 1000;
 
 function svg(theme, mobile) {
   const c = palettes[theme];
@@ -35,8 +41,8 @@ function svg(theme, mobile) {
     { id: 'meta', y: (mobile ? 445 : 328) - metaSize, baseline: metaSize, size: metaSize, cls: 'mono muted', value: mobile ? '@MertAErntrk' : 'T\u00fcrkiye / @MertAErntrk' },
   ];
   const glyphTiming = (index, count) => {
-    const progress = 15.5 * index / Math.max(1, count - 1);
-    return { on: Number((.5 + progress).toFixed(6)), off: Number((84 - progress).toFixed(6)) };
+    const progress = index / Math.max(1, count - 1);
+    return { on: percent(timing.reveal * progress), off: percent(emptyAt - timing.erase * progress) };
   };
   const glyphs = rows.flatMap(row => Array.from(row.value, (_, index) => ({ id: row.id + '-' + index, ...glyphTiming(index, Array.from(row.value).length) })));
   const typedText = row => '<text xml:space="preserve" x="' + (row.id === 'role' ? 20 : 0) + '" y="' + row.baseline + '" class="typed-line ' + row.cls + '" font-size="' + row.size + '"' +
@@ -55,17 +61,17 @@ function svg(theme, mobile) {
     '.mono{font-family:Consolas,"Courier New",monospace}',
     '.motion{transform:none;transform-origin:0 0}.typed-char{visibility:visible}.portrait-image{transform:none}.scan-line,.type-cursor{display:none}',
     // The mask changes coverage while the portrait stays in the same position.
-    '@keyframes portrait-scan{0%{transform:scaleY(0)}16%,68%{transform:scaleY(1)}84%,100%{transform:scaleY(0)}}',
-    '@keyframes scanner{0%{transform:translateY(0);visibility:visible}15.999%{transform:translateY(' + size + 'px);visibility:visible}16%,67.999%{transform:translateY(' + size + 'px);visibility:hidden}68%{transform:translateY(' + size + 'px);visibility:visible}83.999%{transform:translateY(0);visibility:visible}84%,100%{transform:translateY(0);visibility:hidden}}',
-    ...glyphs.map(glyph => '@keyframes glyph-' + glyph.id + '{0%{visibility:hidden}' + glyph.on + '%{visibility:visible}' + glyph.off + '%,100%{visibility:hidden}}'),
-    '@keyframes role-status{0%,84%,100%{visibility:hidden}.5%{visibility:visible}}',
-    '@keyframes caret-travel{0%{' + caretAt(0) + '}' + roleGlyphs.map(glyph => glyph.on + '%{' + caretAt(glyph.index + 1) + '}').join('') + roleGlyphs.slice().reverse().map(glyph => glyph.off + '%{' + caretAt(glyph.index) + '}').join('') + '100%{' + caretAt(0) + '}}',
+    '@keyframes portrait-scan{0%{transform:scaleY(0)}' + percent(timing.reveal) + '%,' + percent(eraseAt) + '%{transform:scaleY(1)}' + percent(emptyAt) + '%,100%{transform:scaleY(0)}}',
+    '@keyframes scanner{0%{transform:translateY(0);visibility:visible}' + percent(timing.reveal - .1) + '%{transform:translateY(' + size + 'px);visibility:visible}' + percent(timing.reveal) + '%,' + percent(eraseAt - .1) + '%{transform:translateY(' + size + 'px);visibility:hidden}' + percent(eraseAt) + '%{transform:translateY(' + size + 'px);visibility:visible}' + percent(emptyAt - .1) + '%{transform:translateY(0);visibility:visible}' + percent(emptyAt) + '%,100%{transform:translateY(0);visibility:hidden}}',
+    ...glyphs.map(glyph => '@keyframes glyph-' + glyph.id + '{' + (glyph.on ? '0%{visibility:hidden}' : '') + glyph.on + '%{visibility:visible}' + glyph.off + '%,100%{visibility:hidden}}'),
+    '@keyframes role-status{0%{visibility:visible}' + percent(emptyAt) + '%,100%{visibility:hidden}}',
+    '@keyframes caret-travel{' + roleGlyphs.map(glyph => glyph.on + '%{' + caretAt(glyph.index + 1) + '}').join('') + roleGlyphs.slice().reverse().map(glyph => glyph.off + '%{' + caretAt(glyph.index) + '}').join('') + '100%{' + caretAt(0) + '}}',
     '@keyframes caret-blink{0%,49.999%{transform:scaleY(1)}50%,100%{transform:scaleY(0)}}',
     '@media(prefers-reduced-motion:no-preference){',
-    '.portrait-window{animation:portrait-scan 10s linear infinite}.scan-line{display:block;animation:scanner 10s linear infinite}',
-    ...glyphs.map(glyph => '.char-' + glyph.id + '{animation:glyph-' + glyph.id + ' 10s step-end infinite}'),
-    '.type-status{animation:role-status 10s step-end infinite}',
-    '.type-cursor{display:block}.cursor-travel{animation:caret-travel 10s step-end infinite}',
+    '.portrait-window{animation:portrait-scan ' + cycleSeconds + 's linear infinite}.scan-line{display:block;animation:scanner ' + cycleSeconds + 's linear infinite}',
+    ...glyphs.map(glyph => '.char-' + glyph.id + '{animation:glyph-' + glyph.id + ' ' + cycleSeconds + 's step-end infinite}'),
+    '.type-status{animation:role-status ' + cycleSeconds + 's step-end infinite}',
+    '.type-cursor{display:block}.cursor-travel{animation:caret-travel ' + cycleSeconds + 's step-end infinite}',
     '.cursor-blink{animation:caret-blink 1s steps(1,end) infinite}',
     '}',
     '@media(prefers-reduced-motion:reduce){.motion{animation:none;transform:none}.scan-line,.type-cursor{display:none}}',
