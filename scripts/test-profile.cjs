@@ -8,13 +8,14 @@ const { chromium } = require('playwright');
 const sharp = require('sharp');
 
 const root = path.resolve(__dirname, '..');
-const out = path.join(root, 'previews/v4');
+const out = path.join(root, 'previews/v7');
 const resultDir = path.join(root, 'test-results');
 fs.mkdirSync(out, { recursive: true });
 fs.mkdirSync(resultDir, { recursive: true });
-const report = { checkedAt: new Date().toISOString(), revision: 'silhouette-scan-v4', structure: [], animation: [], responsive: [], cycles: [], limitations: ['Local Chrome only. GitHub-hosted rendering was not tested.', 'The motion toggle is available in the local HTML preview, not inside GitHub image embeds.'] };
+const report = { checkedAt: new Date().toISOString(), revision: 'downward-reveal-two-percent-silhouette-v7', structure: [], animation: [], responsive: [], cycles: [], limitations: ['Local Chrome only. GitHub-hosted rendering was not tested.', 'The motion toggle is available in the local HTML preview, not inside GitHub image embeds.'] };
 const geometry = mobile => mobile ? { width: 320, height: 462, x: 64, y: 64, size: 192 } : { width: 960, height: 352, x: 32, y: 76, size: 224 };
 const buffers = new Map();
+const silhouetteBuffers = new Map();
 
 async function raw(image, rect) {
   const pipeline = sharp(image);
@@ -33,14 +34,27 @@ async function solid(image, rect, color, label) {
   for (let i = 0; i < data.length; i++) if (Math.abs(data[i] - color[i % 3]) > 1) errors++;
   assert.equal(errors, 0, label);
 }
-async function emptyPortrait(image, g, theme) {
-  await solid(image, { left: g.x + 12, top: g.y + 12, width: g.size - 24, height: g.size - 24 },
-    theme === 'dark' ? [17, 24, 32] : [234, 240, 244], 'No portrait pixels may remain in the empty state');
+async function silhouettePortrait(image, baseline, g) {
+  const rect = { left: g.x + 12, top: g.y + 12, width: g.size - 24, height: g.size - 24 };
+  assert.equal(delta(await raw(image, rect), await raw(baseline, rect)), 0, 'Only the faint silhouette may remain after erasing');
 }
-async function portraitPart(image, full, g, theme, part, empty) {
+async function faintSilhouette(image, g, theme) {
+  const rect = { left: g.x + 12, top: g.y + 12, width: g.size - 24, height: g.size - 24 };
+  const pixels = await raw(image, rect);
+  const background = theme === 'dark' ? [17, 24, 32] : [234, 240, 244];
+  let changedPixels = 0, maximum = 0;
+  for (let i = 0; i < pixels.length; i += 3) {
+    const difference = Math.max(...[0, 1, 2].map(channel => Math.abs(pixels[i + channel] - background[channel])));
+    maximum = Math.max(maximum, difference);
+    if (difference > 1) changedPixels++;
+  }
+  assert(changedPixels > 100, 'A faint silhouette must remain visible');
+  assert(maximum <= 6, 'The silhouette must remain barely visible, not a second full photo');
+  return { changedPixels, maximumChannelDifference: maximum };
+}
+async function portraitPart(image, reference, g, part) {
   const rect = { left: g.x + 12, top: g.y + (part === 'top' ? 12 : Math.floor(g.size * .75)), width: g.size - 24, height: Math.floor(g.size * .25) - 12 };
-  if (empty) await solid(image, rect, theme === 'dark' ? [17, 24, 32] : [234, 240, 244], 'Scan must fully clear ' + part);
-  else assert.equal(delta(await raw(image, rect), await raw(full, rect)), 0, 'The visible photo must not move or fade');
+  assert.equal(delta(await raw(image, rect), await raw(reference, rect)), 0, 'Scan coverage must match the stationary ' + part + ' reference');
 }
 async function stableText(image, full, mobile) {
   const areas = mobile ?
@@ -48,17 +62,18 @@ async function stableText(image, full, mobile) {
     [{ left: 300, top: 77, width: 628, height: 50 }, { left: 300, top: 200, width: 628, height: 65 }];
   for (const area of areas) assert.equal(delta(await raw(image, area), await raw(full, area)), 0, 'Name and description must stay fixed');
 }
-async function frame(page, source, g, seconds, reduced = false, fallback = false, hideScan = false) {
+async function frame(page, source, g, seconds, { reduced = false, fallback = false, hideScan = false, silhouetteOnly = false } = {}) {
   await page.emulateMedia({ reducedMotion: reduced ? 'reduce' : 'no-preference' });
-  const src = await page.evaluate(({ source, seconds, fallback, hideScan }) => {
+  const src = await page.evaluate(({ source, seconds, fallback, hideScan, silhouetteOnly }) => {
     const doc = new DOMParser().parseFromString(source, 'image/svg+xml');
     const style = doc.createElementNS('http://www.w3.org/2000/svg', 'style');
     style.textContent = fallback ? '.motion{animation:none!important;transform:none!important}.scan-line,.type-cursor{display:none!important}' :
       '.motion{animation-play-state:paused!important;animation-delay:-' + seconds + 's!important}';
     if (hideScan) style.textContent += '.scan-line{display:none!important}';
+    if (silhouetteOnly) style.textContent += '.portrait-image,.scan-line{display:none!important}';
     doc.documentElement.appendChild(style);
     return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(doc));
-  }, { source, seconds, fallback, hideScan });
+  }, { source, seconds, fallback, hideScan, silhouetteOnly });
   await page.setViewportSize({ width: g.width, height: g.height });
   await page.goto('about:blank');
   await page.setContent('<html><head><meta name="color-scheme" content="light dark"></head><body style="margin:0"><img alt="Profile test" style="display:block"></body></html>');
@@ -81,17 +96,20 @@ async function portraitAlpha(page, source, size) {
 }
 async function scanCoverage(page, source, g, seconds, alpha) {
   const visible = await frame(page, source, g, seconds);
-  const hidden = await frame(page, source, g, seconds, false, false, true);
+  const hidden = await frame(page, source, g, seconds, { hideScan: true });
   const area = { left: g.x, top: g.y, width: g.size, height: g.size };
   const a = await raw(visible, area), b = await raw(hidden, area);
   let changedPixels = 0;
+  const rows = new Set();
   for (let i = 0; i < alpha.length; i++) {
     if (Math.max(...[0, 1, 2].map(channel => Math.abs(a[i * 3 + channel] - b[i * 3 + channel]))) <= 1) continue;
     assert(alpha[i] > 0, 'Scan must not cross transparent pixels at ' + seconds + 's: ' + (i % g.size) + ',' + Math.floor(i / g.size));
     changedPixels++;
+    rows.add(Math.floor(i / g.size));
   }
   assert(changedPixels > 20, 'Scan must remain visible within the portrait');
-  return { seconds, changedPixels, pixelsOutsideSilhouette: 0 };
+  assert(rows.size >= 4 && rows.size <= 5, 'The thicker scan must cover four pixels, plus at most one antialiased row');
+  return { seconds, changedPixels, visibleRows: rows.size, pixelsOutsideSilhouette: 0 };
 }
 async function positions(page, seconds) {
   return page.evaluate(seconds => {
@@ -110,6 +128,9 @@ async function positions(page, seconds) {
       characters: document.querySelector('.role').textContent.length,
       imageTransform: getComputedStyle(document.querySelector('.portrait-image')).transform,
       imageOpacity: getComputedStyle(document.querySelector('.portrait-image')).opacity,
+      silhouetteOpacity: getComputedStyle(document.querySelector('.portrait-silhouette')).opacity,
+      silhouetteTransform: getComputedStyle(document.querySelector('.portrait-silhouette')).transform,
+      silhouetteAnimations: document.querySelector('.portrait-silhouette').getAnimations().length,
       fixedTextAnimations: [...document.querySelectorAll('.name,.body')].reduce((count, el) => count + el.getAnimations().length, 0),
     };
   }, seconds);
@@ -148,6 +169,9 @@ async function positions(page, seconds) {
           alphaMask: document.querySelector('#portrait-alpha') ? getComputedStyle(document.querySelector('#portrait-alpha')).maskType : null,
           alphaSource: doc.querySelector('#portrait-alpha use')?.getAttribute('href'),
           scannerMask: doc.querySelector('.scan-line')?.parentElement.getAttribute('mask'),
+          scannerHeight: Number(doc.querySelector('.scan-line')?.getAttribute('height')),
+          opacityOwners: [...doc.querySelectorAll('[opacity]')].map(el => el.getAttribute('class')),
+          animatedOpacity: document.getAnimations().some(animation => animation.effect.getKeyframes().some(frame => 'opacity' in frame)),
           missingReferences: refs.filter(id => !doc.getElementById(id)),
           externalResources: [...doc.querySelectorAll('[href]')].map(el => el.getAttribute('href')).filter(href => !href.startsWith('#') && !href.startsWith('data:')),
           scripts: doc.querySelectorAll('script,foreignObject').length,
@@ -162,16 +186,18 @@ async function positions(page, seconds) {
       }, source);
       assert.equal(structure.parserErrors, 0);
       assert.equal(structure.images, 1);
-      assert.equal(structure.uses, 2);
+      assert.equal(structure.uses, 3);
       assert.equal(structure.alphaMask, 'alpha');
       assert.equal(structure.alphaSource, '#portrait');
       assert.equal(structure.scannerMask, 'url(#portrait-alpha)');
+      assert.equal(structure.scannerHeight, 4);
+      assert.deepEqual(structure.opacityOwners, ['portrait-silhouette']);
+      assert.equal(structure.animatedOpacity, false, 'Only the stationary silhouette has reduced opacity');
       assert.deepEqual(structure.missingReferences, []);
       assert.deepEqual(structure.externalResources, []);
       assert.equal(structure.scripts, 0);
       assert.equal(structure.durations.length, 5);
       assert.deepEqual([...structure.durations].sort((a,b) => a-b), [1000, 8000, 8000, 10000, 10000]);
-      assert(!source.includes('opacity'), 'The portrait must be masked, not faded');
       for (const b of structure.textBounds) assert(b.x >= 0 && b.y >= 0 && b.x + b.width <= g.width && b.y + b.height <= g.height, 'Text overflow: ' + name + ' ' + b.text);
       for (let i = 0; i < structure.textBounds.length; i++) for (let j = i + 1; j < structure.textBounds.length; j++) {
         const a = structure.textBounds[i], b = structure.textBounds[j];
@@ -186,20 +212,23 @@ async function positions(page, seconds) {
       for (const state of [opening, settled, erasing, hidden]) {
         assert.equal(state.imageTransform, 'none', 'Portrait itself must never translate');
         assert.equal(state.imageOpacity, '1', 'Portrait must stay at full opacity');
+        assert.equal(state.silhouetteOpacity, '0.02', 'The background silhouette must stay at two percent opacity');
+        assert.equal(state.silhouetteTransform, 'none');
+        assert.equal(state.silhouetteAnimations, 0);
         assert.equal(state.fixedTextAnimations, 0, 'Only the role gets a typing effect');
       }
-      assert(Math.abs(opening.mask.scaleY - .5) < .001 && Math.abs(opening.mask.y - g.size / 2) < .01, 'Reveal from bottom upward');
+      assert(Math.abs(opening.mask.scaleY - .5) < .001 && opening.mask.y === 0, 'Reveal from top downward');
       assert.equal(settled.mask.scaleY, 1);
-      assert(Math.abs(erasing.mask.scaleY - .5) < .001 && Math.abs(erasing.mask.y - g.size / 2) < .01, 'Erase from top downward');
+      assert(Math.abs(erasing.mask.scaleY - .5) < .001 && erasing.mask.y === 0, 'Erase from bottom upward');
       assert.equal(hidden.mask.scaleY, 0);
       const scanStates = [];
       for (const seconds of [.4, 1.2, 7.2, 8]) {
         const state = await positions(page, seconds);
-        assert(Math.abs(state.scanner.y - state.mask.y) < .03, 'Scanner must track the reveal boundary');
+        assert(Math.abs(state.scanner.y - state.mask.scaleY * g.size) < .03, 'Scanner must track the reveal boundary');
         scanStates.push({ seconds, y: state.scanner.y });
       }
-      assert(scanStates[0].y > scanStates[1].y, 'Opening scan must travel upward');
-      assert(scanStates[2].y < scanStates[3].y, 'Erasing scan must travel downward');
+      assert(scanStates[0].y < scanStates[1].y, 'Opening scan must travel downward');
+      assert(scanStates[2].y > scanStates[3].y, 'Erasing scan must travel upward');
       const typeStates = [];
       for (const seconds of [.4, .8, 1.2, 2.8, 5.6, 6.4, 7.5]) {
         const state = await positions(page, seconds);
@@ -220,22 +249,25 @@ async function positions(page, seconds) {
       buffers.set(name, full);
       fs.writeFileSync(path.join(out, name + '-full.png'), full);
       for (const [label, reduced, fallback] of [['reduced', true, false], ['fallback', false, true]]) {
-        const image = await frame(page, source, g, 9.2, reduced, fallback);
+        const image = await frame(page, source, g, 9.2, { reduced, fallback });
         assert.equal(delta(await raw(full), await raw(image)), 0, label + ' must keep all content visible');
         fs.writeFileSync(path.join(out, name + '-' + label + '.png'), image);
       }
       const openingFrame = await frame(page, source, g, .8);
       const erasingFrame = await frame(page, source, g, 7.6);
-      await portraitPart(openingFrame, full, g, theme, 'top', true);
-      await portraitPart(openingFrame, full, g, theme, 'bottom', false);
-      await portraitPart(erasingFrame, full, g, theme, 'top', true);
-      await portraitPart(erasingFrame, full, g, theme, 'bottom', false);
+      const silhouette = await frame(page, source, g, 9.2, { silhouetteOnly: true });
+      silhouetteBuffers.set(name, silhouette);
+      const silhouetteVisibility = await faintSilhouette(silhouette, g, theme);
+      await portraitPart(openingFrame, full, g, 'top');
+      await portraitPart(openingFrame, silhouette, g, 'bottom');
+      await portraitPart(erasingFrame, full, g, 'top');
+      await portraitPart(erasingFrame, silhouette, g, 'bottom');
       const alpha = await portraitAlpha(page, source, g.size);
       const silhouetteChecks = [];
       for (const seconds of [.4, .8, 1.2, 7.2, 7.6, 8]) silhouetteChecks.push(await scanCoverage(page, source, g, seconds, alpha));
-      const empty = await frame(page, source, g, 9.2);
-      await emptyPortrait(empty, g, theme);
-      for (const [label, image] of [['opening', openingFrame], ['erasing', erasingFrame], ['empty', empty]]) {
+      const erased = await frame(page, source, g, 9.2);
+      await silhouettePortrait(erased, silhouette, g);
+      for (const [label, image] of [['opening', openingFrame], ['erasing', erasingFrame], ['silhouette', erased]]) {
         await stableText(image, full, mobile);
         fs.writeFileSync(path.join(out, name + '-' + label + '.png'), image);
       }
@@ -244,11 +276,11 @@ async function positions(page, seconds) {
       await solid(typingEmpty, typeRect, theme === 'dark' ? [11,15,20] : [248,250,252], 'Erased title must not leave ghost text');
       fs.writeFileSync(path.join(out, name + '-typing-empty.png'), typingEmpty);
       fs.writeFileSync(path.join(out, name + '-typing-partial.png'), await frame(page, source, g, 1.2));
-      for (const seconds of [9.999, 10]) await emptyPortrait(await frame(page, source, g, seconds), g, theme);
+      for (const seconds of [0, 9.999, 10]) await silhouettePortrait(await frame(page, source, g, seconds), silhouette, g);
       const repeated = await frame(page, source, g, 43.5);
       assert.equal(delta(await raw(full), await raw(repeated)), 0, 'Both animation cycles must repeat without drift');
-      report.animation.push({ name, portrait: 'stationary, bottom-up reveal and top-down erase', portraitPeriodSeconds: 10, scanDirection: scanStates, silhouetteChecks, titlePeriodSeconds: 8, characterStepping: typeStates, nameAndDescription: 'stationary', emptyPortraitPixels: 0, emptyTitlePixels: 0, reducedMotion: 'pass', fallback: 'pass', loopBoundary: 'pass' });
-      console.log('Validated ' + name + ': XML, layout, stationary portrait, silhouette-only bidirectional scan, character typing and reduced motion');
+      report.animation.push({ name, portrait: 'stationary, top-down reveal and bottom-up erase', portraitPeriodSeconds: 10, scanDirection: scanStates, silhouetteChecks, silhouetteOpacity: .02, silhouetteVisibility, scanHeight: 4, titlePeriodSeconds: 8, characterStepping: typeStates, nameAndDescription: 'stationary', erasedPortrait: 'faint silhouette only', emptyTitlePixels: 0, reducedMotion: 'pass', fallback: 'pass', loopBoundary: 'pass' });
+      console.log('Validated ' + name + ': downward reveal, upward erase, 4px silhouette-only scan, 2% silhouette, character typing and reduced motion');
     }
 
     for (const width of [320, 375, 768, 1440]) for (const theme of ['dark', 'light']) for (const reduced of [false, true]) {
@@ -276,8 +308,12 @@ async function positions(page, seconds) {
         await page.waitForTimeout(180);
         const second = await page.locator('picture img').screenshot();
         const stationaryDelta = delta(await raw(first), await raw(second));
+        if (stationaryDelta > 1) {
+          fs.writeFileSync(path.join(out, 'stationary-first-' + width + '-' + theme + '.png'), first);
+          fs.writeFileSync(path.join(out, 'stationary-second-' + width + '-' + theme + '.png'), second);
+        }
         // Allow one 8-bit channel level of raster rounding, not geometric motion.
-        assert(stationaryDelta <= 1, 'Reduced motion image must be stationary');
+        assert(stationaryDelta <= 1, 'Reduced motion image must be stationary at ' + width + 'px in ' + theme + ': max channel difference ' + stationaryDelta);
         layout.stationaryMaxChannelDifference = stationaryDelta;
         // A paused image must contain the source portrait, not just a still blank frame.
         const g = geometry(mobile);
@@ -316,7 +352,7 @@ async function positions(page, seconds) {
       const image = await page.screenshot();
       fs.writeFileSync(path.join(out, 'live-' + seconds.toFixed(1) + 's.png'), image);
       const phase = seconds % 10;
-      if (phase > 8.4) await emptyPortrait(image, g, 'dark');
+      if (phase > 8.4) await silhouettePortrait(image, silhouetteBuffers.get('dark'), g);
       await stableText(image, buffers.get('dark'), false);
       if (seconds === 3.5) hold = image;
       if (seconds === 13.5) {
