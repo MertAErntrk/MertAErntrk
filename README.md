@@ -72,6 +72,10 @@ Connecting retrieval and tool calls into repeatable workflows, then checking the
 
 Lakehouse layouts, data models and batch or streaming jobs. Understanding when incremental processing helps and how to recover after a failed run.
 
+## Selected Work
+
+- **[Mini Lakehouse Quality Lab](https://github.com/MertAErntrk/mini-lakehouse-quality-lab)** — A reproducible DuckDB and Parquet example with data quality checks, quarantine, and idempotent batch ingestion.
+
 ## Connect
 
 [Portfolio](https://mertalierntrk.dev/) · [GitHub](https://github.com/MertAErntrk) · [Email](mailto:mertali.erntrk@gmail.com)
