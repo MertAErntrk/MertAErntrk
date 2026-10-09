@@ -23,26 +23,49 @@ function svg(theme, mobile) {
   const tx = mobile ? 20 : 300;
   const roleY = mobile ? 320 : 140;
   const text = (x, y, value, cls, size) => '<text x="' + x + '" y="' + y + '" class="' + cls + '" font-size="' + size + '">' + esc(value) + '</text>';
+  const nameSize = mobile ? 26 : 40;
+  const bodySize = mobile ? 18 : 22;
+  const metaSize = mobile ? 14 : 16;
+  // Whole glyphs keep proportional fonts intact; every row shares the scan clock.
+  const rows = [
+    { id: 'name', y: (mobile ? 303 : 118) - nameSize, baseline: nameSize, size: nameSize, cls: 'name', value: profile.name },
+    { id: 'role', y: roleY, baseline: 26, size: roleSize, cls: 'role mono', value: role },
+    { id: 'summary-1', y: (mobile ? 390 : 223) - bodySize, baseline: bodySize, size: bodySize, cls: 'body', value: mobile ? 'Data pipelines, lakehouse' : 'Data pipelines, lakehouse design' },
+    { id: 'summary-2', y: (mobile ? 416 : 251) - bodySize, baseline: bodySize, size: bodySize, cls: 'body', value: mobile ? 'design and LLM applications.' : 'and LLM applications.' },
+    { id: 'meta', y: (mobile ? 445 : 328) - metaSize, baseline: metaSize, size: metaSize, cls: 'mono muted', value: mobile ? '@MertAErntrk' : 'T\u00fcrkiye / @MertAErntrk' },
+  ];
+  const glyphTiming = (index, count) => {
+    const progress = 15.5 * index / Math.max(1, count - 1);
+    return { on: Number((.5 + progress).toFixed(6)), off: Number((84 - progress).toFixed(6)) };
+  };
+  const glyphs = rows.flatMap(row => Array.from(row.value, (_, index) => ({ id: row.id + '-' + index, ...glyphTiming(index, Array.from(row.value).length) })));
+  const typedText = row => '<text xml:space="preserve" x="' + (row.id === 'role' ? 20 : 0) + '" y="' + row.baseline + '" class="typed-line ' + row.cls + '" font-size="' + row.size + '"' +
+    (row.id === 'role' ? ' textLength="' + roleWidth + '" lengthAdjust="spacingAndGlyphs"' : '') + '>' +
+    Array.from(row.value, (char, index) => '<tspan class="motion typed-char char-' + row.id + '-' + index + '">' + esc(char) + '</tspan>').join('') + '</text>';
+  const roleGlyphs = Array.from(role, (_, index) => ({ index, ...glyphTiming(index, role.length) }));
+  const caretAt = count => 'transform:translateX(' + Number((roleWidth * count / role.length).toFixed(6)) + 'px)';
 
   return [
     '<svg xmlns="http://www.w3.org/2000/svg" id="still" width="' + width + '" height="' + height + '" viewBox="0 0 ' + width + ' ' + height + '" role="img" aria-labelledby="title desc">',
     '<title id="title">' + esc(profile.name + ' - ' + role) + '</title>',
-    '<desc id="desc">Data pipelines, lakehouse design and LLM applications. A stationary pixel portrait is revealed by a downward scan and erased by an upward scan, leaving a faint silhouette; the role is typed and deleted.</desc>',
+    '<desc id="desc">Data pipelines, lakehouse design and LLM applications. A downward scan reveals the stationary portrait while the name, role, description and handle are typed letter by letter in parallel. The upward scan erases all text in parallel, from the last letter to the first, leaving a faint portrait silhouette.</desc>',
     '<style>',
     'text{font-family:Arial,Helvetica,sans-serif;letter-spacing:0;fill:' + c.fg + '}',
     '.name{font-weight:700}.role,.prompt{fill:' + c.accent + '}.body,.muted{fill:' + c.muted + '}',
     '.mono{font-family:Consolas,"Courier New",monospace}',
-    '.motion{transform:none;transform-origin:0 0}.portrait-image{transform:none}.scan-line,.type-cursor{display:none}',
+    '.motion{transform:none;transform-origin:0 0}.typed-char{visibility:visible}.portrait-image{transform:none}.scan-line,.type-cursor{display:none}',
     // The mask changes coverage while the portrait stays in the same position.
     '@keyframes portrait-scan{0%{transform:scaleY(0)}16%,68%{transform:scaleY(1)}84%,100%{transform:scaleY(0)}}',
     '@keyframes scanner{0%{transform:translateY(0);visibility:visible}15.999%{transform:translateY(' + size + 'px);visibility:visible}16%,67.999%{transform:translateY(' + size + 'px);visibility:hidden}68%{transform:translateY(' + size + 'px);visibility:visible}83.999%{transform:translateY(0);visibility:visible}84%,100%{transform:translateY(0);visibility:hidden}}',
-    '@keyframes typing{0%,5%{transform:scaleX(0)}25%,65%{transform:scaleX(1)}85%,100%{transform:scaleX(0)}}',
-    '@keyframes caret-travel{0%,5%{transform:translateX(0)}25%,65%{transform:translateX(' + roleWidth + 'px)}85%,100%{transform:translateX(0)}}',
-    '@keyframes caret-blink{0%,49.999%{visibility:visible}50%,100%{visibility:hidden}}',
+    ...glyphs.map(glyph => '@keyframes glyph-' + glyph.id + '{0%{visibility:hidden}' + glyph.on + '%{visibility:visible}' + glyph.off + '%,100%{visibility:hidden}}'),
+    '@keyframes role-status{0%,84%,100%{visibility:hidden}.5%{visibility:visible}}',
+    '@keyframes caret-travel{0%{' + caretAt(0) + '}' + roleGlyphs.map(glyph => glyph.on + '%{' + caretAt(glyph.index + 1) + '}').join('') + roleGlyphs.slice().reverse().map(glyph => glyph.off + '%{' + caretAt(glyph.index) + '}').join('') + '100%{' + caretAt(0) + '}}',
+    '@keyframes caret-blink{0%,49.999%{transform:scaleY(1)}50%,100%{transform:scaleY(0)}}',
     '@media(prefers-reduced-motion:no-preference){',
     '.portrait-window{animation:portrait-scan 10s linear infinite}.scan-line{display:block;animation:scanner 10s linear infinite}',
-    '.type-window{animation:typing 8s steps(' + role.length + ',end) infinite}',
-    '.type-cursor{display:block}.cursor-travel{animation:caret-travel 8s steps(' + role.length + ',end) infinite}',
+    ...glyphs.map(glyph => '.char-' + glyph.id + '{animation:glyph-' + glyph.id + ' 10s step-end infinite}'),
+    '.type-status{animation:role-status 10s step-end infinite}',
+    '.type-cursor{display:block}.cursor-travel{animation:caret-travel 10s step-end infinite}',
     '.cursor-blink{animation:caret-blink 1s steps(1,end) infinite}',
     '}',
     '@media(prefers-reduced-motion:reduce){.motion{animation:none;transform:none}.scan-line,.type-cursor{display:none}}',
@@ -53,7 +76,6 @@ function svg(theme, mobile) {
     '<mask id="portrait-alpha" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse" x="0" y="0" width="' + size + '" height="' + size + '" style="mask-type:alpha"><use href="#portrait"/></mask>',
     '<clipPath id="portrait-frame"><rect width="' + size + '" height="' + size + '" rx="8"/></clipPath>',
     '<clipPath id="portrait-reveal"><rect class="motion portrait-window" width="' + size + '" height="' + size + '"/></clipPath>',
-    '<clipPath id="role-reveal"><rect class="motion type-window" width="' + roleWidth + '" height="36"/></clipPath>',
     '</defs>',
     '<rect width="' + width + '" height="' + height + '" rx="8" fill="' + c.bg + '"/>',
     '<rect x=".5" y=".5" width="' + (width - 1) + '" height="' + (height - 1) + '" rx="8" fill="none" stroke="' + c.border + '"/>',
@@ -66,15 +88,9 @@ function svg(theme, mobile) {
     '<g mask="url(#portrait-alpha)"><rect class="motion scan-line" y="-2" width="' + size + '" height="4" fill="' + c.accent + '"/></g></g>',
     '<rect x=".5" y=".5" width="' + (size - 1) + '" height="' + (size - 1) + '" rx="8" fill="none" stroke="' + c.border + '"/>',
     '</g>',
-    text(tx, mobile ? 303 : 118, profile.name, 'name', mobile ? 26 : 40),
-    '<g id="role-line" transform="translate(' + tx + ' ' + roleY + ')">',
-    text(0, 26, '>', 'mono prompt', roleSize),
-    '<g transform="translate(20 0)"><g clip-path="url(#role-reveal)">',
-    '<text x="0" y="26" class="role mono" font-size="' + roleSize + '" textLength="' + roleWidth + '" lengthAdjust="spacingAndGlyphs">' + esc(role) + '</text>',
-    '</g><g class="type-cursor"><g class="motion cursor-travel"><rect class="motion cursor-blink" y="5" width="2" height="25" fill="' + c.accent + '"/></g></g></g></g>',
-    text(tx, mobile ? 390 : 223, mobile ? 'Data pipelines, lakehouse' : 'Data pipelines, lakehouse design', 'body', mobile ? 18 : 22),
-    text(tx, mobile ? 416 : 251, mobile ? 'design and LLM applications.' : 'and LLM applications.', 'body', mobile ? 18 : 22),
-    text(tx, mobile ? 445 : 328, mobile ? '@MertAErntrk' : 'T\u00fcrkiye / @MertAErntrk', 'mono muted', mobile ? 14 : 16),
+    ...rows.map(row => '<g id="info-' + row.id + '" class="info-row" transform="translate(' + tx + ' ' + row.y + ')">' +
+      (row.id === 'role' ? text(0, 26, '>', 'mono prompt motion type-status', roleSize) : '') + typedText(row) +
+      (row.id === 'role' ? '<g transform="translate(20 0)"><g class="motion type-status type-cursor"><g class="motion cursor-travel"><rect class="motion cursor-blink" y="5" width="2" height="25" fill="' + c.accent + '"/></g></g></g>' : '') + '</g>'),
     mobile ? '' : text(32, 328, '$ scan --portrait', 'mono muted', 16),
     '</svg>\n',
   ].join('\n');

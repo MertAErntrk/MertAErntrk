@@ -1,20 +1,220 @@
 <svg xmlns="http://www.w3.org/2000/svg" id="still" width="320" height="462" viewBox="0 0 320 462" role="img" aria-labelledby="title desc">
 <title id="title">Mert Ali ERENTÜRK - Data &amp; AI Engineer</title>
-<desc id="desc">Data pipelines, lakehouse design and LLM applications. A stationary pixel portrait is revealed by a downward scan and erased by an upward scan, leaving a faint silhouette; the role is typed and deleted.</desc>
+<desc id="desc">Data pipelines, lakehouse design and LLM applications. A downward scan reveals the stationary portrait while the name, role, description and handle are typed letter by letter in parallel. The upward scan erases all text in parallel, from the last letter to the first, leaving a faint portrait silhouette.</desc>
 <style>
 text{font-family:Arial,Helvetica,sans-serif;letter-spacing:0;fill:#E6EDF3}
 .name{font-weight:700}.role,.prompt{fill:#22D3EE}.body,.muted{fill:#A8B3C1}
 .mono{font-family:Consolas,"Courier New",monospace}
-.motion{transform:none;transform-origin:0 0}.portrait-image{transform:none}.scan-line,.type-cursor{display:none}
+.motion{transform:none;transform-origin:0 0}.typed-char{visibility:visible}.portrait-image{transform:none}.scan-line,.type-cursor{display:none}
 @keyframes portrait-scan{0%{transform:scaleY(0)}16%,68%{transform:scaleY(1)}84%,100%{transform:scaleY(0)}}
 @keyframes scanner{0%{transform:translateY(0);visibility:visible}15.999%{transform:translateY(192px);visibility:visible}16%,67.999%{transform:translateY(192px);visibility:hidden}68%{transform:translateY(192px);visibility:visible}83.999%{transform:translateY(0);visibility:visible}84%,100%{transform:translateY(0);visibility:hidden}}
-@keyframes typing{0%,5%{transform:scaleX(0)}25%,65%{transform:scaleX(1)}85%,100%{transform:scaleX(0)}}
-@keyframes caret-travel{0%,5%{transform:translateX(0)}25%,65%{transform:translateX(237.6px)}85%,100%{transform:translateX(0)}}
-@keyframes caret-blink{0%,49.999%{visibility:visible}50%,100%{visibility:hidden}}
+@keyframes glyph-name-0{0%{visibility:hidden}0.5%{visibility:visible}84%,100%{visibility:hidden}}
+@keyframes glyph-name-1{0%{visibility:hidden}1.46875%{visibility:visible}83.03125%,100%{visibility:hidden}}
+@keyframes glyph-name-2{0%{visibility:hidden}2.4375%{visibility:visible}82.0625%,100%{visibility:hidden}}
+@keyframes glyph-name-3{0%{visibility:hidden}3.40625%{visibility:visible}81.09375%,100%{visibility:hidden}}
+@keyframes glyph-name-4{0%{visibility:hidden}4.375%{visibility:visible}80.125%,100%{visibility:hidden}}
+@keyframes glyph-name-5{0%{visibility:hidden}5.34375%{visibility:visible}79.15625%,100%{visibility:hidden}}
+@keyframes glyph-name-6{0%{visibility:hidden}6.3125%{visibility:visible}78.1875%,100%{visibility:hidden}}
+@keyframes glyph-name-7{0%{visibility:hidden}7.28125%{visibility:visible}77.21875%,100%{visibility:hidden}}
+@keyframes glyph-name-8{0%{visibility:hidden}8.25%{visibility:visible}76.25%,100%{visibility:hidden}}
+@keyframes glyph-name-9{0%{visibility:hidden}9.21875%{visibility:visible}75.28125%,100%{visibility:hidden}}
+@keyframes glyph-name-10{0%{visibility:hidden}10.1875%{visibility:visible}74.3125%,100%{visibility:hidden}}
+@keyframes glyph-name-11{0%{visibility:hidden}11.15625%{visibility:visible}73.34375%,100%{visibility:hidden}}
+@keyframes glyph-name-12{0%{visibility:hidden}12.125%{visibility:visible}72.375%,100%{visibility:hidden}}
+@keyframes glyph-name-13{0%{visibility:hidden}13.09375%{visibility:visible}71.40625%,100%{visibility:hidden}}
+@keyframes glyph-name-14{0%{visibility:hidden}14.0625%{visibility:visible}70.4375%,100%{visibility:hidden}}
+@keyframes glyph-name-15{0%{visibility:hidden}15.03125%{visibility:visible}69.46875%,100%{visibility:hidden}}
+@keyframes glyph-name-16{0%{visibility:hidden}16%{visibility:visible}68.5%,100%{visibility:hidden}}
+@keyframes glyph-role-0{0%{visibility:hidden}0.5%{visibility:visible}84%,100%{visibility:hidden}}
+@keyframes glyph-role-1{0%{visibility:hidden}1.411765%{visibility:visible}83.088235%,100%{visibility:hidden}}
+@keyframes glyph-role-2{0%{visibility:hidden}2.323529%{visibility:visible}82.176471%,100%{visibility:hidden}}
+@keyframes glyph-role-3{0%{visibility:hidden}3.235294%{visibility:visible}81.264706%,100%{visibility:hidden}}
+@keyframes glyph-role-4{0%{visibility:hidden}4.147059%{visibility:visible}80.352941%,100%{visibility:hidden}}
+@keyframes glyph-role-5{0%{visibility:hidden}5.058824%{visibility:visible}79.441176%,100%{visibility:hidden}}
+@keyframes glyph-role-6{0%{visibility:hidden}5.970588%{visibility:visible}78.529412%,100%{visibility:hidden}}
+@keyframes glyph-role-7{0%{visibility:hidden}6.882353%{visibility:visible}77.617647%,100%{visibility:hidden}}
+@keyframes glyph-role-8{0%{visibility:hidden}7.794118%{visibility:visible}76.705882%,100%{visibility:hidden}}
+@keyframes glyph-role-9{0%{visibility:hidden}8.705882%{visibility:visible}75.794118%,100%{visibility:hidden}}
+@keyframes glyph-role-10{0%{visibility:hidden}9.617647%{visibility:visible}74.882353%,100%{visibility:hidden}}
+@keyframes glyph-role-11{0%{visibility:hidden}10.529412%{visibility:visible}73.970588%,100%{visibility:hidden}}
+@keyframes glyph-role-12{0%{visibility:hidden}11.441176%{visibility:visible}73.058824%,100%{visibility:hidden}}
+@keyframes glyph-role-13{0%{visibility:hidden}12.352941%{visibility:visible}72.147059%,100%{visibility:hidden}}
+@keyframes glyph-role-14{0%{visibility:hidden}13.264706%{visibility:visible}71.235294%,100%{visibility:hidden}}
+@keyframes glyph-role-15{0%{visibility:hidden}14.176471%{visibility:visible}70.323529%,100%{visibility:hidden}}
+@keyframes glyph-role-16{0%{visibility:hidden}15.088235%{visibility:visible}69.411765%,100%{visibility:hidden}}
+@keyframes glyph-role-17{0%{visibility:hidden}16%{visibility:visible}68.5%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-0{0%{visibility:hidden}0.5%{visibility:visible}84%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-1{0%{visibility:hidden}1.145833%{visibility:visible}83.354167%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-2{0%{visibility:hidden}1.791667%{visibility:visible}82.708333%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-3{0%{visibility:hidden}2.4375%{visibility:visible}82.0625%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-4{0%{visibility:hidden}3.083333%{visibility:visible}81.416667%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-5{0%{visibility:hidden}3.729167%{visibility:visible}80.770833%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-6{0%{visibility:hidden}4.375%{visibility:visible}80.125%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-7{0%{visibility:hidden}5.020833%{visibility:visible}79.479167%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-8{0%{visibility:hidden}5.666667%{visibility:visible}78.833333%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-9{0%{visibility:hidden}6.3125%{visibility:visible}78.1875%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-10{0%{visibility:hidden}6.958333%{visibility:visible}77.541667%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-11{0%{visibility:hidden}7.604167%{visibility:visible}76.895833%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-12{0%{visibility:hidden}8.25%{visibility:visible}76.25%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-13{0%{visibility:hidden}8.895833%{visibility:visible}75.604167%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-14{0%{visibility:hidden}9.541667%{visibility:visible}74.958333%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-15{0%{visibility:hidden}10.1875%{visibility:visible}74.3125%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-16{0%{visibility:hidden}10.833333%{visibility:visible}73.666667%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-17{0%{visibility:hidden}11.479167%{visibility:visible}73.020833%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-18{0%{visibility:hidden}12.125%{visibility:visible}72.375%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-19{0%{visibility:hidden}12.770833%{visibility:visible}71.729167%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-20{0%{visibility:hidden}13.416667%{visibility:visible}71.083333%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-21{0%{visibility:hidden}14.0625%{visibility:visible}70.4375%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-22{0%{visibility:hidden}14.708333%{visibility:visible}69.791667%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-23{0%{visibility:hidden}15.354167%{visibility:visible}69.145833%,100%{visibility:hidden}}
+@keyframes glyph-summary-1-24{0%{visibility:hidden}16%{visibility:visible}68.5%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-0{0%{visibility:hidden}0.5%{visibility:visible}84%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-1{0%{visibility:hidden}1.074074%{visibility:visible}83.425926%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-2{0%{visibility:hidden}1.648148%{visibility:visible}82.851852%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-3{0%{visibility:hidden}2.222222%{visibility:visible}82.277778%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-4{0%{visibility:hidden}2.796296%{visibility:visible}81.703704%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-5{0%{visibility:hidden}3.37037%{visibility:visible}81.12963%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-6{0%{visibility:hidden}3.944444%{visibility:visible}80.555556%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-7{0%{visibility:hidden}4.518519%{visibility:visible}79.981481%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-8{0%{visibility:hidden}5.092593%{visibility:visible}79.407407%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-9{0%{visibility:hidden}5.666667%{visibility:visible}78.833333%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-10{0%{visibility:hidden}6.240741%{visibility:visible}78.259259%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-11{0%{visibility:hidden}6.814815%{visibility:visible}77.685185%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-12{0%{visibility:hidden}7.388889%{visibility:visible}77.111111%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-13{0%{visibility:hidden}7.962963%{visibility:visible}76.537037%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-14{0%{visibility:hidden}8.537037%{visibility:visible}75.962963%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-15{0%{visibility:hidden}9.111111%{visibility:visible}75.388889%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-16{0%{visibility:hidden}9.685185%{visibility:visible}74.814815%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-17{0%{visibility:hidden}10.259259%{visibility:visible}74.240741%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-18{0%{visibility:hidden}10.833333%{visibility:visible}73.666667%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-19{0%{visibility:hidden}11.407407%{visibility:visible}73.092593%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-20{0%{visibility:hidden}11.981481%{visibility:visible}72.518519%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-21{0%{visibility:hidden}12.555556%{visibility:visible}71.944444%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-22{0%{visibility:hidden}13.12963%{visibility:visible}71.37037%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-23{0%{visibility:hidden}13.703704%{visibility:visible}70.796296%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-24{0%{visibility:hidden}14.277778%{visibility:visible}70.222222%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-25{0%{visibility:hidden}14.851852%{visibility:visible}69.648148%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-26{0%{visibility:hidden}15.425926%{visibility:visible}69.074074%,100%{visibility:hidden}}
+@keyframes glyph-summary-2-27{0%{visibility:hidden}16%{visibility:visible}68.5%,100%{visibility:hidden}}
+@keyframes glyph-meta-0{0%{visibility:hidden}0.5%{visibility:visible}84%,100%{visibility:hidden}}
+@keyframes glyph-meta-1{0%{visibility:hidden}1.909091%{visibility:visible}82.590909%,100%{visibility:hidden}}
+@keyframes glyph-meta-2{0%{visibility:hidden}3.318182%{visibility:visible}81.181818%,100%{visibility:hidden}}
+@keyframes glyph-meta-3{0%{visibility:hidden}4.727273%{visibility:visible}79.772727%,100%{visibility:hidden}}
+@keyframes glyph-meta-4{0%{visibility:hidden}6.136364%{visibility:visible}78.363636%,100%{visibility:hidden}}
+@keyframes glyph-meta-5{0%{visibility:hidden}7.545455%{visibility:visible}76.954545%,100%{visibility:hidden}}
+@keyframes glyph-meta-6{0%{visibility:hidden}8.954545%{visibility:visible}75.545455%,100%{visibility:hidden}}
+@keyframes glyph-meta-7{0%{visibility:hidden}10.363636%{visibility:visible}74.136364%,100%{visibility:hidden}}
+@keyframes glyph-meta-8{0%{visibility:hidden}11.772727%{visibility:visible}72.727273%,100%{visibility:hidden}}
+@keyframes glyph-meta-9{0%{visibility:hidden}13.181818%{visibility:visible}71.318182%,100%{visibility:hidden}}
+@keyframes glyph-meta-10{0%{visibility:hidden}14.590909%{visibility:visible}69.909091%,100%{visibility:hidden}}
+@keyframes glyph-meta-11{0%{visibility:hidden}16%{visibility:visible}68.5%,100%{visibility:hidden}}
+@keyframes role-status{0%,84%,100%{visibility:hidden}.5%{visibility:visible}}
+@keyframes caret-travel{0%{transform:translateX(0px)}0.5%{transform:translateX(13.2px)}1.411765%{transform:translateX(26.4px)}2.323529%{transform:translateX(39.6px)}3.235294%{transform:translateX(52.8px)}4.147059%{transform:translateX(66px)}5.058824%{transform:translateX(79.2px)}5.970588%{transform:translateX(92.4px)}6.882353%{transform:translateX(105.6px)}7.794118%{transform:translateX(118.8px)}8.705882%{transform:translateX(132px)}9.617647%{transform:translateX(145.2px)}10.529412%{transform:translateX(158.4px)}11.441176%{transform:translateX(171.6px)}12.352941%{transform:translateX(184.8px)}13.264706%{transform:translateX(198px)}14.176471%{transform:translateX(211.2px)}15.088235%{transform:translateX(224.4px)}16%{transform:translateX(237.6px)}68.5%{transform:translateX(224.4px)}69.411765%{transform:translateX(211.2px)}70.323529%{transform:translateX(198px)}71.235294%{transform:translateX(184.8px)}72.147059%{transform:translateX(171.6px)}73.058824%{transform:translateX(158.4px)}73.970588%{transform:translateX(145.2px)}74.882353%{transform:translateX(132px)}75.794118%{transform:translateX(118.8px)}76.705882%{transform:translateX(105.6px)}77.617647%{transform:translateX(92.4px)}78.529412%{transform:translateX(79.2px)}79.441176%{transform:translateX(66px)}80.352941%{transform:translateX(52.8px)}81.264706%{transform:translateX(39.6px)}82.176471%{transform:translateX(26.4px)}83.088235%{transform:translateX(13.2px)}84%{transform:translateX(0px)}100%{transform:translateX(0px)}}
+@keyframes caret-blink{0%,49.999%{transform:scaleY(1)}50%,100%{transform:scaleY(0)}}
 @media(prefers-reduced-motion:no-preference){
 .portrait-window{animation:portrait-scan 10s linear infinite}.scan-line{display:block;animation:scanner 10s linear infinite}
-.type-window{animation:typing 8s steps(18,end) infinite}
-.type-cursor{display:block}.cursor-travel{animation:caret-travel 8s steps(18,end) infinite}
+.char-name-0{animation:glyph-name-0 10s step-end infinite}
+.char-name-1{animation:glyph-name-1 10s step-end infinite}
+.char-name-2{animation:glyph-name-2 10s step-end infinite}
+.char-name-3{animation:glyph-name-3 10s step-end infinite}
+.char-name-4{animation:glyph-name-4 10s step-end infinite}
+.char-name-5{animation:glyph-name-5 10s step-end infinite}
+.char-name-6{animation:glyph-name-6 10s step-end infinite}
+.char-name-7{animation:glyph-name-7 10s step-end infinite}
+.char-name-8{animation:glyph-name-8 10s step-end infinite}
+.char-name-9{animation:glyph-name-9 10s step-end infinite}
+.char-name-10{animation:glyph-name-10 10s step-end infinite}
+.char-name-11{animation:glyph-name-11 10s step-end infinite}
+.char-name-12{animation:glyph-name-12 10s step-end infinite}
+.char-name-13{animation:glyph-name-13 10s step-end infinite}
+.char-name-14{animation:glyph-name-14 10s step-end infinite}
+.char-name-15{animation:glyph-name-15 10s step-end infinite}
+.char-name-16{animation:glyph-name-16 10s step-end infinite}
+.char-role-0{animation:glyph-role-0 10s step-end infinite}
+.char-role-1{animation:glyph-role-1 10s step-end infinite}
+.char-role-2{animation:glyph-role-2 10s step-end infinite}
+.char-role-3{animation:glyph-role-3 10s step-end infinite}
+.char-role-4{animation:glyph-role-4 10s step-end infinite}
+.char-role-5{animation:glyph-role-5 10s step-end infinite}
+.char-role-6{animation:glyph-role-6 10s step-end infinite}
+.char-role-7{animation:glyph-role-7 10s step-end infinite}
+.char-role-8{animation:glyph-role-8 10s step-end infinite}
+.char-role-9{animation:glyph-role-9 10s step-end infinite}
+.char-role-10{animation:glyph-role-10 10s step-end infinite}
+.char-role-11{animation:glyph-role-11 10s step-end infinite}
+.char-role-12{animation:glyph-role-12 10s step-end infinite}
+.char-role-13{animation:glyph-role-13 10s step-end infinite}
+.char-role-14{animation:glyph-role-14 10s step-end infinite}
+.char-role-15{animation:glyph-role-15 10s step-end infinite}
+.char-role-16{animation:glyph-role-16 10s step-end infinite}
+.char-role-17{animation:glyph-role-17 10s step-end infinite}
+.char-summary-1-0{animation:glyph-summary-1-0 10s step-end infinite}
+.char-summary-1-1{animation:glyph-summary-1-1 10s step-end infinite}
+.char-summary-1-2{animation:glyph-summary-1-2 10s step-end infinite}
+.char-summary-1-3{animation:glyph-summary-1-3 10s step-end infinite}
+.char-summary-1-4{animation:glyph-summary-1-4 10s step-end infinite}
+.char-summary-1-5{animation:glyph-summary-1-5 10s step-end infinite}
+.char-summary-1-6{animation:glyph-summary-1-6 10s step-end infinite}
+.char-summary-1-7{animation:glyph-summary-1-7 10s step-end infinite}
+.char-summary-1-8{animation:glyph-summary-1-8 10s step-end infinite}
+.char-summary-1-9{animation:glyph-summary-1-9 10s step-end infinite}
+.char-summary-1-10{animation:glyph-summary-1-10 10s step-end infinite}
+.char-summary-1-11{animation:glyph-summary-1-11 10s step-end infinite}
+.char-summary-1-12{animation:glyph-summary-1-12 10s step-end infinite}
+.char-summary-1-13{animation:glyph-summary-1-13 10s step-end infinite}
+.char-summary-1-14{animation:glyph-summary-1-14 10s step-end infinite}
+.char-summary-1-15{animation:glyph-summary-1-15 10s step-end infinite}
+.char-summary-1-16{animation:glyph-summary-1-16 10s step-end infinite}
+.char-summary-1-17{animation:glyph-summary-1-17 10s step-end infinite}
+.char-summary-1-18{animation:glyph-summary-1-18 10s step-end infinite}
+.char-summary-1-19{animation:glyph-summary-1-19 10s step-end infinite}
+.char-summary-1-20{animation:glyph-summary-1-20 10s step-end infinite}
+.char-summary-1-21{animation:glyph-summary-1-21 10s step-end infinite}
+.char-summary-1-22{animation:glyph-summary-1-22 10s step-end infinite}
+.char-summary-1-23{animation:glyph-summary-1-23 10s step-end infinite}
+.char-summary-1-24{animation:glyph-summary-1-24 10s step-end infinite}
+.char-summary-2-0{animation:glyph-summary-2-0 10s step-end infinite}
+.char-summary-2-1{animation:glyph-summary-2-1 10s step-end infinite}
+.char-summary-2-2{animation:glyph-summary-2-2 10s step-end infinite}
+.char-summary-2-3{animation:glyph-summary-2-3 10s step-end infinite}
+.char-summary-2-4{animation:glyph-summary-2-4 10s step-end infinite}
+.char-summary-2-5{animation:glyph-summary-2-5 10s step-end infinite}
+.char-summary-2-6{animation:glyph-summary-2-6 10s step-end infinite}
+.char-summary-2-7{animation:glyph-summary-2-7 10s step-end infinite}
+.char-summary-2-8{animation:glyph-summary-2-8 10s step-end infinite}
+.char-summary-2-9{animation:glyph-summary-2-9 10s step-end infinite}
+.char-summary-2-10{animation:glyph-summary-2-10 10s step-end infinite}
+.char-summary-2-11{animation:glyph-summary-2-11 10s step-end infinite}
+.char-summary-2-12{animation:glyph-summary-2-12 10s step-end infinite}
+.char-summary-2-13{animation:glyph-summary-2-13 10s step-end infinite}
+.char-summary-2-14{animation:glyph-summary-2-14 10s step-end infinite}
+.char-summary-2-15{animation:glyph-summary-2-15 10s step-end infinite}
+.char-summary-2-16{animation:glyph-summary-2-16 10s step-end infinite}
+.char-summary-2-17{animation:glyph-summary-2-17 10s step-end infinite}
+.char-summary-2-18{animation:glyph-summary-2-18 10s step-end infinite}
+.char-summary-2-19{animation:glyph-summary-2-19 10s step-end infinite}
+.char-summary-2-20{animation:glyph-summary-2-20 10s step-end infinite}
+.char-summary-2-21{animation:glyph-summary-2-21 10s step-end infinite}
+.char-summary-2-22{animation:glyph-summary-2-22 10s step-end infinite}
+.char-summary-2-23{animation:glyph-summary-2-23 10s step-end infinite}
+.char-summary-2-24{animation:glyph-summary-2-24 10s step-end infinite}
+.char-summary-2-25{animation:glyph-summary-2-25 10s step-end infinite}
+.char-summary-2-26{animation:glyph-summary-2-26 10s step-end infinite}
+.char-summary-2-27{animation:glyph-summary-2-27 10s step-end infinite}
+.char-meta-0{animation:glyph-meta-0 10s step-end infinite}
+.char-meta-1{animation:glyph-meta-1 10s step-end infinite}
+.char-meta-2{animation:glyph-meta-2 10s step-end infinite}
+.char-meta-3{animation:glyph-meta-3 10s step-end infinite}
+.char-meta-4{animation:glyph-meta-4 10s step-end infinite}
+.char-meta-5{animation:glyph-meta-5 10s step-end infinite}
+.char-meta-6{animation:glyph-meta-6 10s step-end infinite}
+.char-meta-7{animation:glyph-meta-7 10s step-end infinite}
+.char-meta-8{animation:glyph-meta-8 10s step-end infinite}
+.char-meta-9{animation:glyph-meta-9 10s step-end infinite}
+.char-meta-10{animation:glyph-meta-10 10s step-end infinite}
+.char-meta-11{animation:glyph-meta-11 10s step-end infinite}
+.type-status{animation:role-status 10s step-end infinite}
+.type-cursor{display:block}.cursor-travel{animation:caret-travel 10s step-end infinite}
 .cursor-blink{animation:caret-blink 1s steps(1,end) infinite}
 }
 @media(prefers-reduced-motion:reduce){.motion{animation:none;transform:none}.scan-line,.type-cursor{display:none}}
@@ -25,7 +225,6 @@ text{font-family:Arial,Helvetica,sans-serif;letter-spacing:0;fill:#E6EDF3}
 <mask id="portrait-alpha" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse" x="0" y="0" width="192" height="192" style="mask-type:alpha"><use href="#portrait"/></mask>
 <clipPath id="portrait-frame"><rect width="192" height="192" rx="8"/></clipPath>
 <clipPath id="portrait-reveal"><rect class="motion portrait-window" width="192" height="192"/></clipPath>
-<clipPath id="role-reveal"><rect class="motion type-window" width="237.6" height="36"/></clipPath>
 </defs>
 <rect width="320" height="462" rx="8" fill="#0B0F14"/>
 <rect x=".5" y=".5" width="319" height="461" rx="8" fill="none" stroke="#34414E"/>
@@ -38,14 +237,10 @@ text{font-family:Arial,Helvetica,sans-serif;letter-spacing:0;fill:#E6EDF3}
 <g mask="url(#portrait-alpha)"><rect class="motion scan-line" y="-2" width="192" height="4" fill="#22D3EE"/></g></g>
 <rect x=".5" y=".5" width="191" height="191" rx="8" fill="none" stroke="#34414E"/>
 </g>
-<text x="20" y="303" class="name" font-size="26">Mert Ali ERENTÜRK</text>
-<g id="role-line" transform="translate(20 320)">
-<text x="0" y="26" class="mono prompt" font-size="22">&gt;</text>
-<g transform="translate(20 0)"><g clip-path="url(#role-reveal)">
-<text x="0" y="26" class="role mono" font-size="22" textLength="237.6" lengthAdjust="spacingAndGlyphs">Data &amp; AI Engineer</text>
-</g><g class="type-cursor"><g class="motion cursor-travel"><rect class="motion cursor-blink" y="5" width="2" height="25" fill="#22D3EE"/></g></g></g></g>
-<text x="20" y="390" class="body" font-size="18">Data pipelines, lakehouse</text>
-<text x="20" y="416" class="body" font-size="18">design and LLM applications.</text>
-<text x="20" y="445" class="mono muted" font-size="14">@MertAErntrk</text>
+<g id="info-name" class="info-row" transform="translate(20 277)"><text xml:space="preserve" x="0" y="26" class="typed-line name" font-size="26"><tspan class="motion typed-char char-name-0">M</tspan><tspan class="motion typed-char char-name-1">e</tspan><tspan class="motion typed-char char-name-2">r</tspan><tspan class="motion typed-char char-name-3">t</tspan><tspan class="motion typed-char char-name-4"> </tspan><tspan class="motion typed-char char-name-5">A</tspan><tspan class="motion typed-char char-name-6">l</tspan><tspan class="motion typed-char char-name-7">i</tspan><tspan class="motion typed-char char-name-8"> </tspan><tspan class="motion typed-char char-name-9">E</tspan><tspan class="motion typed-char char-name-10">R</tspan><tspan class="motion typed-char char-name-11">E</tspan><tspan class="motion typed-char char-name-12">N</tspan><tspan class="motion typed-char char-name-13">T</tspan><tspan class="motion typed-char char-name-14">Ü</tspan><tspan class="motion typed-char char-name-15">R</tspan><tspan class="motion typed-char char-name-16">K</tspan></text></g>
+<g id="info-role" class="info-row" transform="translate(20 320)"><text x="0" y="26" class="mono prompt motion type-status" font-size="22">&gt;</text><text xml:space="preserve" x="20" y="26" class="typed-line role mono" font-size="22" textLength="237.6" lengthAdjust="spacingAndGlyphs"><tspan class="motion typed-char char-role-0">D</tspan><tspan class="motion typed-char char-role-1">a</tspan><tspan class="motion typed-char char-role-2">t</tspan><tspan class="motion typed-char char-role-3">a</tspan><tspan class="motion typed-char char-role-4"> </tspan><tspan class="motion typed-char char-role-5">&amp;</tspan><tspan class="motion typed-char char-role-6"> </tspan><tspan class="motion typed-char char-role-7">A</tspan><tspan class="motion typed-char char-role-8">I</tspan><tspan class="motion typed-char char-role-9"> </tspan><tspan class="motion typed-char char-role-10">E</tspan><tspan class="motion typed-char char-role-11">n</tspan><tspan class="motion typed-char char-role-12">g</tspan><tspan class="motion typed-char char-role-13">i</tspan><tspan class="motion typed-char char-role-14">n</tspan><tspan class="motion typed-char char-role-15">e</tspan><tspan class="motion typed-char char-role-16">e</tspan><tspan class="motion typed-char char-role-17">r</tspan></text><g transform="translate(20 0)"><g class="motion type-status type-cursor"><g class="motion cursor-travel"><rect class="motion cursor-blink" y="5" width="2" height="25" fill="#22D3EE"/></g></g></g></g>
+<g id="info-summary-1" class="info-row" transform="translate(20 372)"><text xml:space="preserve" x="0" y="18" class="typed-line body" font-size="18"><tspan class="motion typed-char char-summary-1-0">D</tspan><tspan class="motion typed-char char-summary-1-1">a</tspan><tspan class="motion typed-char char-summary-1-2">t</tspan><tspan class="motion typed-char char-summary-1-3">a</tspan><tspan class="motion typed-char char-summary-1-4"> </tspan><tspan class="motion typed-char char-summary-1-5">p</tspan><tspan class="motion typed-char char-summary-1-6">i</tspan><tspan class="motion typed-char char-summary-1-7">p</tspan><tspan class="motion typed-char char-summary-1-8">e</tspan><tspan class="motion typed-char char-summary-1-9">l</tspan><tspan class="motion typed-char char-summary-1-10">i</tspan><tspan class="motion typed-char char-summary-1-11">n</tspan><tspan class="motion typed-char char-summary-1-12">e</tspan><tspan class="motion typed-char char-summary-1-13">s</tspan><tspan class="motion typed-char char-summary-1-14">,</tspan><tspan class="motion typed-char char-summary-1-15"> </tspan><tspan class="motion typed-char char-summary-1-16">l</tspan><tspan class="motion typed-char char-summary-1-17">a</tspan><tspan class="motion typed-char char-summary-1-18">k</tspan><tspan class="motion typed-char char-summary-1-19">e</tspan><tspan class="motion typed-char char-summary-1-20">h</tspan><tspan class="motion typed-char char-summary-1-21">o</tspan><tspan class="motion typed-char char-summary-1-22">u</tspan><tspan class="motion typed-char char-summary-1-23">s</tspan><tspan class="motion typed-char char-summary-1-24">e</tspan></text></g>
+<g id="info-summary-2" class="info-row" transform="translate(20 398)"><text xml:space="preserve" x="0" y="18" class="typed-line body" font-size="18"><tspan class="motion typed-char char-summary-2-0">d</tspan><tspan class="motion typed-char char-summary-2-1">e</tspan><tspan class="motion typed-char char-summary-2-2">s</tspan><tspan class="motion typed-char char-summary-2-3">i</tspan><tspan class="motion typed-char char-summary-2-4">g</tspan><tspan class="motion typed-char char-summary-2-5">n</tspan><tspan class="motion typed-char char-summary-2-6"> </tspan><tspan class="motion typed-char char-summary-2-7">a</tspan><tspan class="motion typed-char char-summary-2-8">n</tspan><tspan class="motion typed-char char-summary-2-9">d</tspan><tspan class="motion typed-char char-summary-2-10"> </tspan><tspan class="motion typed-char char-summary-2-11">L</tspan><tspan class="motion typed-char char-summary-2-12">L</tspan><tspan class="motion typed-char char-summary-2-13">M</tspan><tspan class="motion typed-char char-summary-2-14"> </tspan><tspan class="motion typed-char char-summary-2-15">a</tspan><tspan class="motion typed-char char-summary-2-16">p</tspan><tspan class="motion typed-char char-summary-2-17">p</tspan><tspan class="motion typed-char char-summary-2-18">l</tspan><tspan class="motion typed-char char-summary-2-19">i</tspan><tspan class="motion typed-char char-summary-2-20">c</tspan><tspan class="motion typed-char char-summary-2-21">a</tspan><tspan class="motion typed-char char-summary-2-22">t</tspan><tspan class="motion typed-char char-summary-2-23">i</tspan><tspan class="motion typed-char char-summary-2-24">o</tspan><tspan class="motion typed-char char-summary-2-25">n</tspan><tspan class="motion typed-char char-summary-2-26">s</tspan><tspan class="motion typed-char char-summary-2-27">.</tspan></text></g>
+<g id="info-meta" class="info-row" transform="translate(20 431)"><text xml:space="preserve" x="0" y="14" class="typed-line mono muted" font-size="14"><tspan class="motion typed-char char-meta-0">@</tspan><tspan class="motion typed-char char-meta-1">M</tspan><tspan class="motion typed-char char-meta-2">e</tspan><tspan class="motion typed-char char-meta-3">r</tspan><tspan class="motion typed-char char-meta-4">t</tspan><tspan class="motion typed-char char-meta-5">A</tspan><tspan class="motion typed-char char-meta-6">E</tspan><tspan class="motion typed-char char-meta-7">r</tspan><tspan class="motion typed-char char-meta-8">n</tspan><tspan class="motion typed-char char-meta-9">t</tspan><tspan class="motion typed-char char-meta-10">r</tspan><tspan class="motion typed-char char-meta-11">k</tspan></text></g>
 
 </svg>

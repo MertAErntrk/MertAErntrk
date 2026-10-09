@@ -8,11 +8,11 @@ const { chromium } = require('playwright');
 const sharp = require('sharp');
 
 const root = path.resolve(__dirname, '..');
-const out = path.join(root, 'previews/v10');
+const out = path.join(root, 'previews/v12');
 const resultDir = path.join(root, 'test-results');
 fs.mkdirSync(out, { recursive: true });
 fs.mkdirSync(resultDir, { recursive: true });
-const report = { checkedAt: new Date().toISOString(), revision: 'architecture-cards-no-permalinks-v10', structure: [], animation: [], responsive: [], cycles: [], limitations: ['Local Chrome only. GitHub-hosted rendering is verified separately after publication.', 'GitHub uses native table borders and two columns for the README cards; the local HTML preview uses responsive CSS cards.', 'The motion toggle is available in the local HTML preview, not inside GitHub image embeds.'] };
+const report = { checkedAt: new Date().toISOString(), revision: 'parallel-character-typing-v12', structure: [], animation: [], responsive: [], cycles: [], limitations: ['Local Chrome only. GitHub-hosted rendering is verified separately after publication.', 'GitHub uses native table borders and two columns for the README cards; the local HTML preview uses responsive CSS cards.', 'The motion toggle is available in the local HTML preview, not inside GitHub image embeds.'] };
 const geometry = mobile => mobile ? { width: 320, height: 462, x: 64, y: 64, size: 192 } : { width: 960, height: 352, x: 32, y: 76, size: 224 };
 const buffers = new Map();
 const silhouetteBuffers = new Map();
@@ -56,11 +56,23 @@ async function portraitPart(image, reference, g, part) {
   const rect = { left: g.x + 12, top: g.y + (part === 'top' ? 12 : Math.floor(g.size * .75)), width: g.size - 24, height: Math.floor(g.size * .25) - 12 };
   assert.equal(delta(await raw(image, rect), await raw(reference, rect)), 0, 'Scan coverage must match the stationary ' + part + ' reference');
 }
-async function stableText(image, full, mobile) {
-  const areas = mobile ?
-    [{ left: 20, top: 270, width: 280, height: 45 }, { left: 20, top: 365, width: 280, height: 60 }] :
-    [{ left: 300, top: 77, width: 628, height: 50 }, { left: 300, top: 200, width: 628, height: 65 }];
-  for (const area of areas) assert.equal(delta(await raw(image, area), await raw(full, area)), 0, 'Name and description must stay fixed');
+const infoAreas = mobile => (mobile ? [[277, 36], [320, 36], [372, 26], [398, 26], [431, 21]] :
+  [[78, 50], [140, 36], [201, 30], [229, 30], [312, 23]])
+  .map(([top, height]) => ({ left: mobile ? 20 : 300, top, width: mobile ? 280 : 628, height }));
+const background = theme => theme === 'dark' ? [11, 15, 20] : [248, 250, 252];
+async function emptyInfo(image, mobile, theme) {
+  for (const area of infoAreas(mobile)) await solid(image, area, background(theme), 'Erased information must not leave text or a cursor');
+}
+async function infoPixels(image, mobile, theme) {
+  const color = background(theme);
+  const counts = [];
+  for (const area of infoAreas(mobile)) {
+    const pixels = await raw(image, area);
+    let count = 0;
+    for (let i = 0; i < pixels.length; i += 3) if ([0, 1, 2].some(channel => Math.abs(pixels[i + channel] - color[channel]) > 1)) count++;
+    counts.push(count);
+  }
+  return counts;
 }
 async function frame(page, source, g, seconds, { reduced = false, fallback = false, hideScan = false, silhouetteOnly = false } = {}) {
   await page.emulateMedia({ reducedMotion: reduced ? 'reduce' : 'no-preference' });
@@ -122,16 +134,31 @@ async function positions(page, seconds) {
     return {
       mask: matrix('.portrait-window'),
       scanner: matrix('.scan-line'),
-      typing: matrix('.type-window'),
       caret: matrix('.cursor-travel'),
-      roleWidth: Number(document.querySelector('.type-window').getAttribute('width')),
+      roleWidth: Number(document.querySelector('.role').getAttribute('textLength')),
       characters: document.querySelector('.role').textContent.length,
       imageTransform: getComputedStyle(document.querySelector('.portrait-image')).transform,
       imageOpacity: getComputedStyle(document.querySelector('.portrait-image')).opacity,
       silhouetteOpacity: getComputedStyle(document.querySelector('.portrait-silhouette')).opacity,
       silhouetteTransform: getComputedStyle(document.querySelector('.portrait-silhouette')).transform,
       silhouetteAnimations: document.querySelector('.portrait-silhouette').getAnimations().length,
-      fixedTextAnimations: [...document.querySelectorAll('.name,.body')].reduce((count, el) => count + el.getAnimations().length, 0),
+      information: ['name', 'role', 'summary-1', 'summary-2', 'meta'].map(id => {
+        const line = document.querySelector('#info-' + id + ' .typed-line');
+        const glyphs = [...line.querySelectorAll('.typed-char')];
+        const visible = glyphs.map(glyph => getComputedStyle(glyph).visibility === 'visible');
+        return {
+          id, text: line.textContent, count: glyphs.length, visible,
+          visibleText: glyphs.filter((_, index) => visible[index]).map(glyph => glyph.textContent).join(''),
+          visibleCount: visible.filter(Boolean).length,
+          animations: glyphs.reduce((count, glyph) => count + glyph.getAnimations().length, 0),
+          stationary: glyphs.every(glyph => getComputedStyle(glyph).transform === 'none'),
+          renderedCharacters: line.getNumberOfChars(),
+          characterPositions: Array.from({ length: line.getNumberOfChars() }, (_, index) => {
+            const point = line.getStartPositionOfChar(index);
+            return [point.x, point.y];
+          }),
+        };
+      }),
     };
   }, seconds);
 }
@@ -141,11 +168,12 @@ async function positions(page, seconds) {
   try {
     const content = JSON.parse(fs.readFileSync(path.join(root, 'profile-content.json'), 'utf8'));
     const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
-    assert(!/Selected Works?|## Toolkit|Solution Architect|solution architecture/i.test(readme));
+    assert(!/## Toolkit|Solution Architect|solution architecture/i.test(readme));
     assert(!/at the intersection|intelligent applications|coherent platform|agentic systems/i.test(readme));
     assert(!/\bPython\b|\bSQL\b/.test(readme));
     for (const title of [...content.roles, ...content.capabilities.map(item => item.title), ...content.focus.map(item => item.title)]) assert(readme.includes(title) || readme.includes(title.replaceAll('&', '&amp;')), 'README missing ' + title);
     assert(content.capabilities.length === 7 && content.focus.length === 3);
+    for (const project of content.projects) assert(readme.includes('[' + project.title + '](' + project.url + ')'), 'Preserve existing project links');
 
     browser = await chromium.launch({ headless: true, ...(process.env.PROFILE_TEST_CHANNEL ? { channel: process.env.PROFILE_TEST_CHANNEL } : {}) });
     const page = await browser.newPage({ deviceScaleFactor: 1 });
@@ -198,6 +226,8 @@ async function positions(page, seconds) {
           missingReferences: refs.filter(id => !doc.getElementById(id)),
           externalResources: [...doc.querySelectorAll('[href]')].map(el => el.getAttribute('href')).filter(href => !href.startsWith('#') && !href.startsWith('data:')),
           scripts: doc.querySelectorAll('script,foreignObject').length,
+          typedCharacters: doc.querySelectorAll('.typed-char').length,
+          clippedInformation: [...doc.querySelectorAll('.typed-line')].some(line => line.closest('[clip-path],[mask]')),
           durations: document.getAnimations().map(a => a.effect.getTiming().duration),
           textBounds: [...document.querySelectorAll('text')].map(el => {
             const b = el.getBBox();
@@ -219,8 +249,9 @@ async function positions(page, seconds) {
       assert.deepEqual(structure.missingReferences, []);
       assert.deepEqual(structure.externalResources, []);
       assert.equal(structure.scripts, 0);
-      assert.equal(structure.durations.length, 5);
-      assert.deepEqual([...structure.durations].sort((a,b) => a-b), [1000, 8000, 8000, 10000, 10000]);
+      assert.equal(structure.clippedInformation, false, 'Typing must reveal whole characters, not crop glyphs');
+      assert.equal(structure.durations.length, structure.typedCharacters + 6);
+      assert.deepEqual([...structure.durations].sort((a,b) => a-b), [1000, ...Array(structure.typedCharacters + 5).fill(10000)]);
       for (const b of structure.textBounds) assert(b.x >= 0 && b.y >= 0 && b.x + b.width <= g.width && b.y + b.height <= g.height, 'Text overflow: ' + name + ' ' + b.text);
       for (let i = 0; i < structure.textBounds.length; i++) for (let j = i + 1; j < structure.textBounds.length; j++) {
         const a = structure.textBounds[i], b = structure.textBounds[j];
@@ -238,12 +269,34 @@ async function positions(page, seconds) {
         assert.equal(state.silhouetteOpacity, '0.02', 'The background silhouette must stay at two percent opacity');
         assert.equal(state.silhouetteTransform, 'none');
         assert.equal(state.silhouetteAnimations, 0);
-        assert.equal(state.fixedTextAnimations, 0, 'Only the role gets a typing effect');
+        assert(state.information.every(row => row.animations === row.count), 'Every character must have a discrete visibility animation');
+        assert(state.information.every(row => row.stationary && row.renderedCharacters === row.count), 'Characters and spaces must retain their layout');
+        for (const [index, row] of state.information.entries()) assert.deepEqual(row.characterPositions, settled.information[index].characterPositions, 'No text movement or layout shift while typing');
       }
       assert(Math.abs(opening.mask.scaleY - .5) < .001 && opening.mask.y === 0, 'Reveal from top downward');
       assert.equal(settled.mask.scaleY, 1);
       assert(Math.abs(erasing.mask.scaleY - .5) < .001 && erasing.mask.y === 0, 'Erase from bottom upward');
       assert.equal(hidden.mask.scaleY, 0);
+      assert(settled.information.every(row => row.visibleCount === row.count));
+      assert(hidden.information.every(row => row.visibleCount === 0));
+      const rowStates = [];
+      // Sample between glyph boundaries; exact CSS step edges can round either way.
+      for (const seconds of [.025, .06, .151, .451, .801, 1.101, 1.401, 1.61, 6.84, 6.901, 7.301, 7.651, 7.851, 8.201, 8.41]) {
+        const state = await positions(page, seconds);
+        for (const row of state.information) {
+          const expected = Array.from({ length: row.count }, (_, index) => {
+            const offset = 1.55 * index / (row.count - 1);
+            return seconds + 1e-7 >= .05 + offset && seconds < 8.4 - offset - 1e-7;
+          });
+          assert.deepEqual(row.visible, expected, 'Parallel character timing for ' + row.id + ' at ' + seconds + 's');
+          assert.deepEqual(row.visible, Array.from({ length: row.count }, (_, index) => index < row.visibleCount), 'Characters must form an unbroken prefix');
+          assert.equal(row.visibleText, Array.from(row.text).slice(0, row.visibleCount).join(''));
+        }
+        if (seconds === .06) assert(state.information.every(row => row.visibleCount === 1), 'Every row must start with its first character at the same time');
+        if (seconds === 1.61 || seconds === 6.84) assert(state.information.every(row => row.visibleCount === row.count));
+        if (seconds === .025 || seconds === 8.41) assert(state.information.every(row => row.visibleCount === 0));
+        rowStates.push({ seconds, rows: state.information.map(row => ({ id: row.id, characters: row.visibleCount, visibleText: row.visibleText })) });
+      }
       const scanStates = [];
       for (const seconds of [.4, 1.2, 7.2, 8]) {
         const state = await positions(page, seconds);
@@ -253,12 +306,11 @@ async function positions(page, seconds) {
       assert(scanStates[0].y < scanStates[1].y, 'Opening scan must travel downward');
       assert(scanStates[2].y > scanStates[3].y, 'Erasing scan must travel upward');
       const typeStates = [];
-      for (const seconds of [.4, .8, 1.2, 2.8, 5.6, 6.4, 7.5]) {
+      for (const seconds of [.025, .4, 1, 2.8, 7.2, 7.9, 8.5]) {
         const state = await positions(page, seconds);
-        const count = state.typing.scaleX * state.characters;
-        assert(Math.abs(count - Math.round(count)) < .001, 'Typing must stop on whole character boundaries');
-        assert(Math.abs(state.caret.x - state.typing.scaleX * state.roleWidth) < .01, 'Cursor must follow the text edge');
-        typeStates.push({ seconds, characters: Math.round(count) });
+        const count = state.information.find(row => row.id === 'role').visibleCount;
+        assert(Math.abs(state.caret.x - count / state.characters * state.roleWidth) < .01, 'Cursor must follow the last whole character');
+        typeStates.push({ seconds, characters: count });
       }
       assert(typeStates[0].characters === 0 && typeStates[3].characters === 18 && typeStates[6].characters === 0);
       assert(typeStates[1].characters < typeStates[2].characters && typeStates[4].characters > typeStates[5].characters);
@@ -291,19 +343,31 @@ async function positions(page, seconds) {
       const erased = await frame(page, source, g, 9.2);
       await silhouettePortrait(erased, silhouette, g);
       for (const [label, image] of [['opening', openingFrame], ['erasing', erasingFrame], ['silhouette', erased]]) {
-        await stableText(image, full, mobile);
         fs.writeFileSync(path.join(out, name + '-' + label + '.png'), image);
       }
-      const typingEmpty = await frame(page, source, g, 7.5);
+      await emptyInfo(erased, mobile, theme);
+      const textChecks = [];
+      for (const [seconds, expectedRows] of [[.025, 0], [.06, 5], [.5, 5], [1.1, 5], [1.4, 5], [2.1, 5], [7.3, 5], [7.65, 5], [7.9, 5], [8.2, 5], [8.6, 0]]) {
+        const image = await frame(page, source, g, seconds);
+        const pixels = await infoPixels(image, mobile, theme);
+        assert.deepEqual(pixels.map(count => count > 0), Array.from({ length: 5 }, (_, index) => index < expectedRows), 'All rows type in parallel at ' + seconds + 's in ' + name);
+        textChecks.push({ seconds, pixels });
+        fs.writeFileSync(path.join(out, name + '-info-' + seconds + 's.png'), image);
+      }
+      const typingEmpty = erased;
       const typeRect = { left: (mobile ? 20 : 300) + 20, top: mobile ? 320 : 140, width: Math.ceil(settled.roleWidth) + 3, height: 36 };
       await solid(typingEmpty, typeRect, theme === 'dark' ? [11,15,20] : [248,250,252], 'Erased title must not leave ghost text');
       fs.writeFileSync(path.join(out, name + '-typing-empty.png'), typingEmpty);
       fs.writeFileSync(path.join(out, name + '-typing-partial.png'), await frame(page, source, g, 1.2));
-      for (const seconds of [0, 9.999, 10]) await silhouettePortrait(await frame(page, source, g, seconds), silhouette, g);
+      for (const seconds of [0, 9.999, 10]) {
+        const boundary = await frame(page, source, g, seconds);
+        await silhouettePortrait(boundary, silhouette, g);
+        await emptyInfo(boundary, mobile, theme);
+      }
       const repeated = await frame(page, source, g, 43.5);
       assert.equal(delta(await raw(full), await raw(repeated)), 0, 'Both animation cycles must repeat without drift');
-      report.animation.push({ name, portrait: 'stationary, top-down reveal and bottom-up erase', portraitPeriodSeconds: 10, scanDirection: scanStates, silhouetteChecks, silhouetteOpacity: .02, silhouetteVisibility, scanHeight: 4, titlePeriodSeconds: 8, characterStepping: typeStates, nameAndDescription: 'stationary', erasedPortrait: 'faint silhouette only', emptyTitlePixels: 0, reducedMotion: 'pass', fallback: 'pass', loopBoundary: 'pass' });
-      console.log('Validated ' + name + ': downward reveal, upward erase, 4px silhouette-only scan, 2% silhouette, character typing and reduced motion');
+      report.animation.push({ name, portrait: 'stationary, top-down reveal and bottom-up erase', portraitPeriodSeconds: 10, scanDirection: scanStates, silhouetteChecks, silhouetteOpacity: .02, silhouetteVisibility, scanHeight: 4, titlePeriodSeconds: 10, characterStepping: typeStates, information: 'parallel whole-character typing and reverse deletion', rowStates, textChecks, erasedPortrait: 'faint silhouette only', emptyInformationPixels: 0, reducedMotion: 'pass', fallback: 'pass', loopBoundary: 'pass' });
+      console.log('Validated ' + name + ': parallel character typing, synchronized deletion, stationary glyphs, 2% silhouette and reduced motion');
     }
 
     for (const width of [320, 375, 768, 1440]) for (const theme of ['dark', 'light']) for (const reduced of [false, true]) {
@@ -402,8 +466,14 @@ async function positions(page, seconds) {
       const image = await page.screenshot();
       fs.writeFileSync(path.join(out, 'live-' + seconds.toFixed(1) + 's.png'), image);
       const phase = seconds % 10;
-      if (phase > 8.4) await silhouettePortrait(image, silhouetteBuffers.get('dark'), g);
-      await stableText(image, buffers.get('dark'), false);
+      if (phase > 8.4) {
+        await silhouettePortrait(image, silhouetteBuffers.get('dark'), g);
+        await emptyInfo(image, false, 'dark');
+      }
+      if (phase > 2.1 && phase < 6.8) {
+        const counts = await infoPixels(image, false, 'dark');
+        assert(counts.every(count => count > 50), 'All information must remain readable during the hold');
+      }
       if (seconds === 3.5) hold = image;
       if (seconds === 13.5) {
         const area = { left: g.x + 12, top: g.y + 12, width: g.size - 24, height: g.size - 24 };
