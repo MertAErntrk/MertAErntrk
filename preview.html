@@ -1,0 +1,47 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark"><title>Mert Ali ERENTÜRK | Profile</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#fff;color:#0f172a;font:16px/1.7 Arial,Helvetica,sans-serif;letter-spacing:0}
+main{width:min(100%,1024px);margin:24px auto 64px;padding:0 32px}picture,picture img{display:block;width:100%;height:auto}
+h2{font-size:24px;line-height:1.3;margin:38px 0 20px;padding-bottom:12px;border-bottom:1px solid #d0d7de}
+h3{font-size:18px;line-height:1.4;margin:0 0 8px}p{margin:0 0 16px}a{color:#0e7490;text-underline-offset:4px}
+a:hover{text-decoration-thickness:2px}a:focus-visible,button:focus-visible{outline:2px solid #0e7490;outline-offset:4px}
+.roles{color:#0e7490;font-weight:600}.capabilities{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 40px}
+.capabilities article{padding-bottom:8px;border-bottom:1px solid #e4e9ed}.focus{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
+.tools{display:flex;justify-content:flex-end;margin-bottom:8px}button{width:36px;height:36px;display:grid;place-items:center;border:1px solid #b6c4d0;border-radius:6px;background:transparent;cursor:pointer}
+button img{width:18px;height:18px}button:hover{border-color:#0e7490;background:#eaf0f4}button:disabled{cursor:default}button:disabled img{opacity:.5}
+@media(prefers-color-scheme:dark){body{background:#080b10;color:#e6edf3}h2,.capabilities article{border-color:#34414e}a,.roles{color:#22d3ee}button{border-color:#34414e}button img{filter:invert(1)}button:hover{border-color:#22d3ee;background:#111820}a:focus-visible,button:focus-visible{outline-color:#22d3ee}}
+@media(max-width:900px){.focus{grid-template-columns:1fr;gap:12px}}
+@media(max-width:767px){main{margin:12px auto 40px;padding:0 16px}.capabilities{grid-template-columns:1fr;gap:20px}h2{font-size:22px;margin-top:32px}.tools{margin-bottom:8px}button{width:44px;height:44px}}
+</style></head><body><main>
+<div class="tools"><button id="motion-toggle" type="button" aria-pressed="false" aria-label="Show static profile" title="Show static profile"><img src="assets/pause.svg" alt="" /></button></div>
+<picture>
+  <source media="(prefers-reduced-motion: reduce) and (max-width: 767px) and (prefers-color-scheme: dark)" srcset="dark-mobile.svg#still" />
+  <source media="(prefers-reduced-motion: reduce) and (max-width: 767px)" srcset="light-mobile.svg#still" />
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="dark.svg#still" />
+  <source media="(prefers-reduced-motion: reduce)" srcset="light.svg#still" />
+  <source media="(max-width: 767px) and (prefers-color-scheme: dark)" srcset="dark-mobile.svg" />
+  <source media="(max-width: 767px)" srcset="light-mobile.svg" />
+  <source media="(prefers-color-scheme: dark)" srcset="dark.svg" />
+  <img src="light.svg" width="100%" alt="Mert Ali ERENTÜRK, Data &amp; AI Engineer. Data pipelines, lakehouse design and LLM applications." />
+</picture>
+<section aria-labelledby="about"><h2 id="about">About</h2><p class="roles">Data &amp; AI Engineer</p><p>I&#39;m Mert Ali ERENTÜRK, a Data &amp; AI Engineer. I work on data pipelines, lakehouse design and LLM applications.</p><p>I&#39;m also working on mobile apps and LangGraph workflows. I care about where the data comes from, what happens when a job fails, and how to check an AI output.</p></section>
+<section aria-labelledby="architecture"><h2 id="architecture">Architecture &amp; System Design</h2><div class="capabilities"><article><h3>Lakehouse Architecture</h3><p>Raw, cleaned and serving layers, with clear rules for how data moves between them. Schema changes, table layout and data quality checks are the main design decisions.</p></article>
+<article><h3>Big Data Ecosystems &amp; Data Platforms</h3><p>How storage, distributed compute and orchestration fit together. Choosing batch or streaming based on the workload, rather than adding infrastructure by default.</p></article>
+<article><h3>Data Flows &amp; Orchestration</h3><p>Dependencies, incremental loads, retries and backfills. I pay particular attention to whether a failed run can be repeated without duplicating data.</p></article>
+<article><h3>System Design</h3><p>API boundaries, events and shared state between services. Keeping interfaces clear enough that one component can change without forcing changes everywhere else.</p></article>
+<article><h3>AI Pipeline Design</h3><p>Taking data through preparation, retrieval or inference, then evaluation. Recording which inputs, prompts and models produced a result makes debugging possible.</p></article>
+<article><h3>LLM Application Architectures</h3><p>Retrieval, context assembly, tool calls and structured responses. Testing what the application should do when context is missing or a model gives an unusable answer.</p></article>
+<article><h3>LangGraph Agent Workflows</h3><p>State, routing and tool use in multi-step agent flows. Checkpoints and human review define where a workflow can pause, resume or ask for help.</p></article></div></section>
+<section aria-labelledby="focus"><h2 id="focus">Current Focus</h2><div class="focus"><article><h3>Mobile Application Development</h3><p>Mobile interfaces, application state and API integration. I&#39;m interested in how the client handles authentication, loading and failed requests.</p></article>
+<article><h3>AI Pipelines &amp; Agent Workflows</h3><p>Connecting retrieval and tool calls into repeatable workflows, then checking the outputs. LangGraph is part of this work.</p></article>
+<article><h3>Data Engineering Concepts</h3><p>Lakehouse layouts, data models and batch or streaming jobs. Understanding when incremental processing helps and how to recover after a failed run.</p></article></div></section>
+<section aria-labelledby="connect"><h2 id="connect">Connect</h2><p><a href="https://mertalierntrk.dev/">Portfolio</a> &middot; <a href="https://github.com/MertAErntrk">GitHub</a> &middot; <a href="mailto:mertali.erntrk@gmail.com">Email</a></p></section>
+</main><script>
+const preference=matchMedia("(prefers-reduced-motion: reduce)");
+const button=document.querySelector("#motion-toggle");const portrait=document.querySelector("picture");
+const sources=[...portrait.querySelectorAll("source")];const image=portrait.querySelector("img");
+const originals=sources.map(source=>source.srcset);let manualStatic=false;
+function updateMotion(){const still=preference.matches||manualStatic;sources.forEach((source,index)=>source.srcset=still?originals[index].split("#")[0]+"#still":originals[index]);image.src=still?"light.svg#still":"light.svg";button.setAttribute("aria-pressed",String(still));button.disabled=preference.matches;const label=preference.matches?"Reduced motion enabled":still?"Animate profile":"Show static profile";button.setAttribute("aria-label",label);button.title=label;button.querySelector("img").src=still?"assets/play.svg":"assets/pause.svg";}
+button.addEventListener("click",()=>{manualStatic=!manualStatic;updateMotion()});preference.addEventListener("change",updateMotion);updateMotion();
+</script></body></html>

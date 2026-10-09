@@ -1,0 +1,10 @@
+previews/
+test-results/
+assets/portrait-original.jpg
+assets/github-avatar-original.png
+assets/avatar-generated-original.png
+
+# Local design notes and superseded portrait.
+DEVELOPMENT.txt
+asset-notes.json
+assets/avatar-500.png

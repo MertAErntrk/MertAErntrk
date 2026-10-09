@@ -1,25 +1,67 @@
-<div align="center">
-
 <picture>
+  <source media="(prefers-reduced-motion: reduce) and (max-width: 767px) and (prefers-color-scheme: dark)" srcset="dark-mobile.svg#still" />
+  <source media="(prefers-reduced-motion: reduce) and (max-width: 767px)" srcset="light-mobile.svg#still" />
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="dark.svg#still" />
+  <source media="(prefers-reduced-motion: reduce)" srcset="light.svg#still" />
+  <source media="(max-width: 767px) and (prefers-color-scheme: dark)" srcset="dark-mobile.svg" />
+  <source media="(max-width: 767px)" srcset="light-mobile.svg" />
   <source media="(prefers-color-scheme: dark)" srcset="dark.svg" />
-  <source media="(prefers-color-scheme: light)" srcset="light.svg" />
-  <img src="dark.svg" alt="Mert Ali ERENTÜRK — Big Data Developer · AI Engineer" width="100%" />
+  <img src="light.svg" width="100%" alt="Mert Ali ERENTÜRK, Data &amp; AI Engineer. Data pipelines, lakehouse design and LLM applications." />
 </picture>
 
-<br/><br/>
+## About
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api?username=MertAErntrk&show_icons=true&hide_border=true&theme=tokyonight&bg_color=00000000" />
-  <img height="165" src="https://github-readme-stats.vercel.app/api?username=MertAErntrk&show_icons=true&hide_border=true&bg_color=00000000" alt="GitHub stats" />
-</picture>
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api/top-langs/?username=MertAErntrk&layout=compact&hide_border=true&theme=tokyonight&bg_color=00000000" />
-  <img height="165" src="https://github-readme-stats.vercel.app/api/top-langs/?username=MertAErntrk&layout=compact&hide_border=true&bg_color=00000000" alt="Top languages" />
-</picture>
+**Data & AI Engineer**
 
-<br/><br/>
+I'm Mert Ali ERENTÜRK, a Data & AI Engineer. I work on data pipelines, lakehouse design and LLM applications.
 
-<a href="https://mertalierntrk.dev/">🌐 mertalierntrk.dev</a>
+I'm also working on mobile apps and LangGraph workflows. I care about where the data comes from, what happens when a job fails, and how to check an AI output.
 
-</div>
+## Architecture & System Design
+
+### Lakehouse Architecture
+
+Raw, cleaned and serving layers, with clear rules for how data moves between them. Schema changes, table layout and data quality checks are the main design decisions.
+
+### Big Data Ecosystems & Data Platforms
+
+How storage, distributed compute and orchestration fit together. Choosing batch or streaming based on the workload, rather than adding infrastructure by default.
+
+### Data Flows & Orchestration
+
+Dependencies, incremental loads, retries and backfills. I pay particular attention to whether a failed run can be repeated without duplicating data.
+
+### System Design
+
+API boundaries, events and shared state between services. Keeping interfaces clear enough that one component can change without forcing changes everywhere else.
+
+### AI Pipeline Design
+
+Taking data through preparation, retrieval or inference, then evaluation. Recording which inputs, prompts and models produced a result makes debugging possible.
+
+### LLM Application Architectures
+
+Retrieval, context assembly, tool calls and structured responses. Testing what the application should do when context is missing or a model gives an unusable answer.
+
+### LangGraph Agent Workflows
+
+State, routing and tool use in multi-step agent flows. Checkpoints and human review define where a workflow can pause, resume or ask for help.
+
+## Current Focus
+
+### Mobile Application Development
+
+Mobile interfaces, application state and API integration. I'm interested in how the client handles authentication, loading and failed requests.
+
+### AI Pipelines & Agent Workflows
+
+Connecting retrieval and tool calls into repeatable workflows, then checking the outputs. LangGraph is part of this work.
+
+### Data Engineering Concepts
+
+Lakehouse layouts, data models and batch or streaming jobs. Understanding when incremental processing helps and how to recover after a failed run.
+
+## Connect
+
+[Portfolio](https://mertalierntrk.dev/) · [GitHub](https://github.com/MertAErntrk) · [Email](mailto:mertali.erntrk@gmail.com)
 
