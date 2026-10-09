@@ -19,33 +19,44 @@ I'm also working on mobile apps and LangGraph workflows. I care about where the 
 
 ## Architecture & System Design
 
-### Lakehouse Architecture
-
-Raw, cleaned and serving layers, with clear rules for how data moves between them. Schema changes, table layout and data quality checks are the main design decisions.
-
-### Big Data Ecosystems & Data Platforms
-
-How storage, distributed compute and orchestration fit together. Choosing batch or streaming based on the workload, rather than adding infrastructure by default.
-
-### Data Flows & Orchestration
-
-Dependencies, incremental loads, retries and backfills. I pay particular attention to whether a failed run can be repeated without duplicating data.
-
-### System Design
-
-API boundaries, events and shared state between services. Keeping interfaces clear enough that one component can change without forcing changes everywhere else.
-
-### AI Pipeline Design
-
-Taking data through preparation, retrieval or inference, then evaluation. Recording which inputs, prompts and models produced a result makes debugging possible.
-
-### LLM Application Architectures
-
-Retrieval, context assembly, tool calls and structured responses. Testing what the application should do when context is missing or a model gives an unusable answer.
-
-### LangGraph Agent Workflows
-
-State, routing and tool use in multi-step agent flows. Checkpoints and human review define where a workflow can pause, resume or ask for help.
+<table width="100%">
+<tr>
+<td width="50%" valign="top">
+<h3>Lakehouse Architecture</h3>
+<p>Raw, cleaned and serving layers, with clear rules for how data moves between them. Schema changes, table layout and data quality checks are the main design decisions.</p>
+</td>
+<td width="50%" valign="top">
+<h3>Big Data Ecosystems &amp; Data Platforms</h3>
+<p>How storage, distributed compute and orchestration fit together. Choosing batch or streaming based on the workload, rather than adding infrastructure by default.</p>
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<h3>Data Flows &amp; Orchestration</h3>
+<p>Dependencies, incremental loads, retries and backfills. I pay particular attention to whether a failed run can be repeated without duplicating data.</p>
+</td>
+<td width="50%" valign="top">
+<h3>System Design</h3>
+<p>API boundaries, events and shared state between services. Keeping interfaces clear enough that one component can change without forcing changes everywhere else.</p>
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<h3>AI Pipeline Design</h3>
+<p>Taking data through preparation, retrieval or inference, then evaluation. Recording which inputs, prompts and models produced a result makes debugging possible.</p>
+</td>
+<td width="50%" valign="top">
+<h3>LLM Application Architectures</h3>
+<p>Retrieval, context assembly, tool calls and structured responses. Testing what the application should do when context is missing or a model gives an unusable answer.</p>
+</td>
+</tr>
+<tr>
+<td colspan="2" valign="top">
+<h3>LangGraph Agent Workflows</h3>
+<p>State, routing and tool use in multi-step agent flows. Checkpoints and human review define where a workflow can pause, resume or ask for help.</p>
+</td>
+</tr>
+</table>
 
 ## Current Focus
 

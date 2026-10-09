@@ -94,13 +94,24 @@ function picture() {
     '\n  <img src="light.svg" width="100%" alt="' + esc(profile.name + ', ' + profile.roles.join(', ') + '. Data pipelines, lakehouse design and LLM applications.') + '" />\n</picture>';
 }
 
+function architectureTable() {
+  const rows = [];
+  for (let index = 0; index < profile.capabilities.length; index += 2) {
+    const items = profile.capabilities.slice(index, index + 2);
+    const cells = items.map(item => '<td ' + (items.length === 1 ? 'colspan="2"' : 'width="50%"') + ' valign="top">\n' +
+      '<h3>' + esc(item.title) + '</h3>\n<p>' + esc(item.description) + '</p>\n</td>');
+    rows.push('<tr>\n' + cells.join('\n') + '\n</tr>');
+  }
+  return '<table width="100%">\n' + rows.join('\n') + '\n</table>';
+}
+
 const readme = [
   picture(),
   '## About',
   '**' + profile.roles.join(' \u00b7 ') + '**',
   ...profile.about,
   '## Architecture & System Design',
-  ...profile.capabilities.map(item => '### ' + item.title + '\n\n' + item.description),
+  architectureTable(),
   '## Current Focus',
   ...profile.focus.map(item => '### ' + item.title + '\n\n' + item.description),
   '## Connect',
@@ -118,13 +129,14 @@ const preview = [
   'h2{font-size:24px;line-height:1.3;margin:38px 0 20px;padding-bottom:12px;border-bottom:1px solid #d0d7de}',
   'h3{font-size:18px;line-height:1.4;margin:0 0 8px}p{margin:0 0 16px}a{color:#0e7490;text-underline-offset:4px}',
   'a:hover{text-decoration-thickness:2px}a:focus-visible,button:focus-visible{outline:2px solid #0e7490;outline-offset:4px}',
-  '.roles{color:#0e7490;font-weight:600}.capabilities{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 40px}',
-  '.capabilities article{padding-bottom:8px;border-bottom:1px solid #e4e9ed}.focus{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}',
+  '.roles{color:#0e7490;font-weight:600}.capabilities{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}',
+  '.capabilities article{min-width:0;padding:22px;border:1px solid #d0d7de;border-radius:6px;background:#f8fafc}.capabilities article:last-child:nth-child(odd){grid-column:1/-1}',
+  '.capabilities h3{margin-bottom:10px}.capabilities p{max-width:72ch;margin:0;color:#475569;overflow-wrap:anywhere}.focus{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}',
   '.tools{display:flex;justify-content:flex-end;margin-bottom:8px}button{width:36px;height:36px;display:grid;place-items:center;border:1px solid #b6c4d0;border-radius:6px;background:transparent;cursor:pointer}',
   'button img{width:18px;height:18px}button:hover{border-color:#0e7490;background:#eaf0f4}button:disabled{cursor:default}button:disabled img{opacity:.5}',
-  '@media(prefers-color-scheme:dark){body{background:#080b10;color:#e6edf3}h2,.capabilities article{border-color:#34414e}a,.roles{color:#22d3ee}button{border-color:#34414e}button img{filter:invert(1)}button:hover{border-color:#22d3ee;background:#111820}a:focus-visible,button:focus-visible{outline-color:#22d3ee}}',
+  '@media(prefers-color-scheme:dark){body{background:#080b10;color:#e6edf3}h2,.capabilities article{border-color:#34414e}.capabilities article{background:#0b0f14}.capabilities p{color:#a8b3c1}a,.roles{color:#22d3ee}button{border-color:#34414e}button img{filter:invert(1)}button:hover{border-color:#22d3ee;background:#111820}a:focus-visible,button:focus-visible{outline-color:#22d3ee}}',
   '@media(max-width:900px){.focus{grid-template-columns:1fr;gap:12px}}',
-  '@media(max-width:767px){main{margin:12px auto 40px;padding:0 16px}.capabilities{grid-template-columns:1fr;gap:20px}h2{font-size:22px;margin-top:32px}.tools{margin-bottom:8px}button{width:44px;height:44px}}',
+  '@media(max-width:767px){main{margin:12px auto 40px;padding:0 16px}.capabilities{grid-template-columns:1fr;gap:12px}.capabilities article{padding:18px}h2{font-size:22px;margin-top:32px}.tools{margin-bottom:8px}button{width:44px;height:44px}}',
   '</style></head><body><main>',
   '<div class="tools"><button id="motion-toggle" type="button" aria-pressed="false" aria-label="Show static profile" title="Show static profile"><img src="assets/pause.svg" alt="" /></button></div>',
   picture(),

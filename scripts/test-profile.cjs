@@ -8,11 +8,11 @@ const { chromium } = require('playwright');
 const sharp = require('sharp');
 
 const root = path.resolve(__dirname, '..');
-const out = path.join(root, 'previews/v7');
+const out = path.join(root, 'previews/v9');
 const resultDir = path.join(root, 'test-results');
 fs.mkdirSync(out, { recursive: true });
 fs.mkdirSync(resultDir, { recursive: true });
-const report = { checkedAt: new Date().toISOString(), revision: 'downward-reveal-two-percent-silhouette-v7', structure: [], animation: [], responsive: [], cycles: [], limitations: ['Local Chrome only. GitHub-hosted rendering was not tested.', 'The motion toggle is available in the local HTML preview, not inside GitHub image embeds.'] };
+const report = { checkedAt: new Date().toISOString(), revision: 'architecture-cards-github-v9', structure: [], animation: [], responsive: [], cycles: [], limitations: ['Local Chrome only. GitHub-hosted rendering is verified separately after publication.', 'GitHub uses native table borders and two columns for the README cards; the local HTML preview uses responsive CSS cards.', 'The motion toggle is available in the local HTML preview, not inside GitHub image embeds.'] };
 const geometry = mobile => mobile ? { width: 320, height: 462, x: 64, y: 64, size: 192 } : { width: 960, height: 352, x: 32, y: 76, size: 224 };
 const buffers = new Map();
 const silhouetteBuffers = new Map();
@@ -144,11 +144,28 @@ async function positions(page, seconds) {
     assert(!/Selected Works?|## Toolkit|Solution Architect|solution architecture/i.test(readme));
     assert(!/at the intersection|intelligent applications|coherent platform|agentic systems/i.test(readme));
     assert(!/\bPython\b|\bSQL\b/.test(readme));
-    for (const title of [...content.roles, ...content.capabilities.map(item => item.title), ...content.focus.map(item => item.title)]) assert(readme.includes(title), 'README missing ' + title);
+    for (const title of [...content.roles, ...content.capabilities.map(item => item.title), ...content.focus.map(item => item.title)]) assert(readme.includes(title) || readme.includes(title.replaceAll('&', '&amp;')), 'README missing ' + title);
     assert(content.capabilities.length === 7 && content.focus.length === 3);
 
     browser = await chromium.launch({ headless: true, ...(process.env.PROFILE_TEST_CHANNEL ? { channel: process.env.PROFILE_TEST_CHANNEL } : {}) });
     const page = await browser.newPage({ deviceScaleFactor: 1 });
+    const readmeCards = await page.evaluate(source => {
+      const doc = new DOMParser().parseFromString(source, 'text/html');
+      const table = doc.querySelector('table');
+      return {
+        rows: table.rows.length,
+        columns: [...table.rows].map(row => [...row.cells].reduce((count, cell) => count + cell.colSpan, 0)),
+        cards: [...table.querySelectorAll('td')].map(cell => ({ title: cell.querySelector('h3').textContent, description: cell.querySelector('p').textContent })),
+        customStyles: table.querySelectorAll('[style],style,script').length,
+        lastCardSpan: table.rows[table.rows.length - 1].cells[0].colSpan,
+      };
+    }, readme);
+    assert.deepEqual(readmeCards.cards, content.capabilities);
+    assert.equal(readmeCards.rows, 4);
+    assert.deepEqual(readmeCards.columns, [2, 2, 2, 2]);
+    assert.equal(readmeCards.lastCardSpan, 2);
+    assert.equal(readmeCards.customStyles, 0, 'README cards must not depend on custom CSS or scripts');
+    report.readmeCards = readmeCards;
     const sources = {};
     for (const theme of ['dark', 'light']) for (const mobile of [false, true]) {
       const name = theme + (mobile ? '-mobile' : '');
@@ -291,10 +308,36 @@ async function positions(page, seconds) {
       const layout = await page.evaluate(() => {
         const img = document.querySelector('picture img');
         const b = img.getBoundingClientRect();
-        return { src: img.currentSrc.split('/').pop(), width: b.width, height: b.height, overflow: document.documentElement.scrollWidth > innerWidth, loaded: img.complete && img.naturalWidth > 0, reducedButtonDisabled: document.querySelector('button').disabled };
+        const grid = document.querySelector('.capabilities');
+        const cards = [...grid.querySelectorAll('article')].map(card => {
+          const bounds = card.getBoundingClientRect();
+          const style = getComputedStyle(card);
+          const heading = card.querySelector('h3').getBoundingClientRect();
+          const paragraph = card.querySelector('p').getBoundingClientRect();
+          return {
+            x: bounds.x, y: bounds.y, width: bounds.width, height: bounds.height,
+            border: [style.borderTopWidth, style.borderRightWidth, style.borderBottomWidth, style.borderLeftWidth],
+            radius: style.borderRadius,
+            contentFits: [heading, paragraph].every(child => child.x >= bounds.x && child.right <= bounds.right && child.y >= bounds.y && child.bottom <= bounds.bottom) && heading.bottom <= paragraph.y,
+          };
+        });
+        return { src: img.currentSrc.split('/').pop(), width: b.width, height: b.height, overflow: document.documentElement.scrollWidth > innerWidth, loaded: img.complete && img.naturalWidth > 0, reducedButtonDisabled: document.querySelector('button').disabled, cardColumns: getComputedStyle(grid).gridTemplateColumns.split(' ').length, cards };
       });
       assert(layout.loaded && !layout.overflow);
       const mobile = width < 768;
+      assert.equal(layout.cardColumns, mobile ? 1 : 2);
+      assert.equal(layout.cards.length, content.capabilities.length);
+      for (const card of layout.cards) {
+        assert(card.contentFits, 'Architecture card text must stay within its border');
+        assert.deepEqual(card.border, ['1px', '1px', '1px', '1px']);
+        assert.equal(card.radius, '6px');
+      }
+      if (mobile) assert(layout.cards.every(card => card.x === layout.cards[0].x));
+      else {
+        assert.equal(layout.cards[0].y, layout.cards[1].y);
+        assert(layout.cards[1].x >= layout.cards[0].x + layout.cards[0].width + 15);
+        assert.equal(layout.cards.at(-1).width, layout.width, 'The final odd card spans the grid');
+      }
       const name = theme + (mobile ? '-mobile' : '');
       assert.equal(layout.src, name + '.svg' + (reduced ? '#still' : ''));
       assert.equal(layout.reducedButtonDisabled, reduced);
@@ -304,6 +347,7 @@ async function positions(page, seconds) {
       assert(minBodyPixels >= 16, 'Profile body text must be readable at ' + width + 'px');
       if (reduced) {
         await page.screenshot({ path: path.join(out, 'profile-' + width + '-' + theme + '.png'), fullPage: true });
+        await page.locator('section[aria-labelledby="architecture"]').screenshot({ path: path.join(out, 'architecture-' + width + '-' + theme + '.png') });
         const first = await page.locator('picture img').screenshot();
         await page.waitForTimeout(180);
         const second = await page.locator('picture img').screenshot();
