@@ -8,11 +8,11 @@ const { chromium } = require('playwright');
 const sharp = require('sharp');
 
 const root = path.resolve(__dirname, '..');
-const out = path.join(root, 'previews/v9');
+const out = path.join(root, 'previews/v10');
 const resultDir = path.join(root, 'test-results');
 fs.mkdirSync(out, { recursive: true });
 fs.mkdirSync(resultDir, { recursive: true });
-const report = { checkedAt: new Date().toISOString(), revision: 'architecture-cards-github-v9', structure: [], animation: [], responsive: [], cycles: [], limitations: ['Local Chrome only. GitHub-hosted rendering is verified separately after publication.', 'GitHub uses native table borders and two columns for the README cards; the local HTML preview uses responsive CSS cards.', 'The motion toggle is available in the local HTML preview, not inside GitHub image embeds.'] };
+const report = { checkedAt: new Date().toISOString(), revision: 'architecture-cards-no-permalinks-v10', structure: [], animation: [], responsive: [], cycles: [], limitations: ['Local Chrome only. GitHub-hosted rendering is verified separately after publication.', 'GitHub uses native table borders and two columns for the README cards; the local HTML preview uses responsive CSS cards.', 'The motion toggle is available in the local HTML preview, not inside GitHub image embeds.'] };
 const geometry = mobile => mobile ? { width: 320, height: 462, x: 64, y: 64, size: 192 } : { width: 960, height: 352, x: 32, y: 76, size: 224 };
 const buffers = new Map();
 const silhouetteBuffers = new Map();
@@ -155,7 +155,10 @@ async function positions(page, seconds) {
       return {
         rows: table.rows.length,
         columns: [...table.rows].map(row => [...row.cells].reduce((count, cell) => count + cell.colSpan, 0)),
-        cards: [...table.querySelectorAll('td')].map(cell => ({ title: cell.querySelector('h3').textContent, description: cell.querySelector('p').textContent })),
+        cards: [...table.querySelectorAll('td')].map(cell => ({ title: cell.querySelector('strong').textContent.replace(/^\u2022 /, ''), description: cell.querySelector('p:last-child').textContent })),
+        headings: table.querySelectorAll('h1,h2,h3,h4,h5,h6').length,
+        links: table.querySelectorAll('a').length,
+        markers: [...table.querySelectorAll('strong')].every(label => label.textContent.startsWith('\u2022 ')),
         customStyles: table.querySelectorAll('[style],style,script').length,
         lastCardSpan: table.rows[table.rows.length - 1].cells[0].colSpan,
       };
@@ -165,6 +168,9 @@ async function positions(page, seconds) {
     assert.deepEqual(readmeCards.columns, [2, 2, 2, 2]);
     assert.equal(readmeCards.lastCardSpan, 2);
     assert.equal(readmeCards.customStyles, 0, 'README cards must not depend on custom CSS or scripts');
+    assert.equal(readmeCards.headings, 0, 'Card labels must not generate GitHub heading permalinks');
+    assert.equal(readmeCards.links, 0, 'Card labels must not contain protruding link icons');
+    assert.equal(readmeCards.markers, true, 'Each card label uses an ordinary bullet');
     report.readmeCards = readmeCards;
     const sources = {};
     for (const theme of ['dark', 'light']) for (const mobile of [false, true]) {

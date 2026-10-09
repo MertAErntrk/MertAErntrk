@@ -99,7 +99,7 @@ function architectureTable() {
   for (let index = 0; index < profile.capabilities.length; index += 2) {
     const items = profile.capabilities.slice(index, index + 2);
     const cells = items.map(item => '<td ' + (items.length === 1 ? 'colspan="2"' : 'width="50%"') + ' valign="top">\n' +
-      '<h3>' + esc(item.title) + '</h3>\n<p>' + esc(item.description) + '</p>\n</td>');
+      '<p><strong>&bull; ' + esc(item.title) + '</strong></p>\n<p>' + esc(item.description) + '</p>\n</td>');
     rows.push('<tr>\n' + cells.join('\n') + '\n</tr>');
   }
   return '<table width="100%">\n' + rows.join('\n') + '\n</table>';
@@ -131,7 +131,7 @@ const preview = [
   'a:hover{text-decoration-thickness:2px}a:focus-visible,button:focus-visible{outline:2px solid #0e7490;outline-offset:4px}',
   '.roles{color:#0e7490;font-weight:600}.capabilities{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}',
   '.capabilities article{min-width:0;padding:22px;border:1px solid #d0d7de;border-radius:6px;background:#f8fafc}.capabilities article:last-child:nth-child(odd){grid-column:1/-1}',
-  '.capabilities h3{margin-bottom:10px}.capabilities p{max-width:72ch;margin:0;color:#475569;overflow-wrap:anywhere}.focus{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}',
+  '.capabilities h3{margin-bottom:10px}.capabilities h3::before{content:"\\2022";margin-right:8px}.capabilities p{max-width:72ch;margin:0;color:#475569;overflow-wrap:anywhere}.focus{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}',
   '.tools{display:flex;justify-content:flex-end;margin-bottom:8px}button{width:36px;height:36px;display:grid;place-items:center;border:1px solid #b6c4d0;border-radius:6px;background:transparent;cursor:pointer}',
   'button img{width:18px;height:18px}button:hover{border-color:#0e7490;background:#eaf0f4}button:disabled{cursor:default}button:disabled img{opacity:.5}',
   '@media(prefers-color-scheme:dark){body{background:#080b10;color:#e6edf3}h2,.capabilities article{border-color:#34414e}.capabilities article{background:#0b0f14}.capabilities p{color:#a8b3c1}a,.roles{color:#22d3ee}button{border-color:#34414e}button img{filter:invert(1)}button:hover{border-color:#22d3ee;background:#111820}a:focus-visible,button:focus-visible{outline-color:#22d3ee}}',
