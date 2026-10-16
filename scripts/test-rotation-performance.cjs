@@ -7,7 +7,8 @@ const { chromium } = require('playwright');
 const sharp = require('sharp');
 
 const root = path.resolve(__dirname, '..');
-const out = path.join(root, 'previews/v16');
+const out = path.join(root, 'previews/v17');
+const rotation = JSON.parse(fs.readFileSync(path.join(root, 'assets/avatar-rotation.json'), 'utf8'));
 fs.mkdirSync(out, { recursive: true });
 const phaseAt = seconds => seconds < 2.2 ? 'reveal' : seconds < 7.4 ? 'hold' : seconds < 9.6 ? 'erase' : 'silhouette';
 
@@ -39,7 +40,7 @@ const phaseAt = seconds => seconds < 2.2 ? 'reveal' : seconds < 7.4 ? 'hold' : s
       await client.send('Page.stopScreencast');
       const video = page.video();
       await context.close();
-      if (video) await video.saveAs(path.join(out, 'continuous-rotation-' + throttle + 'x.webm'));
+      if (video) await video.saveAs(path.join(out, 'stepped-rotation-' + throttle + 'x.webm'));
       let previousHash, lastChange;
       const phases = Object.fromEntries(['reveal', 'hold', 'erase', 'silhouette'].map(phase => [phase, { changes: 0, maxGapMs: 0 }]));
       for (const capture of captures) {
@@ -53,12 +54,14 @@ const phaseAt = seconds => seconds < 2.2 ? 'reveal' : seconds < 7.4 ? 'hold' : s
         previousHash = hash;
       }
       const warnings = [];
+      const phaseSeconds = { reveal: 2.2, hold: 5.2, erase: 2.2, silhouette: 1.2 };
+      const frameMs = 1000 / rotation.fps;
       for (const [name, phase] of Object.entries(phases)) {
-        if (phase.changes < (name === 'silhouette' ? 12 : 20)) warnings.push('Low rendered frame count during ' + name);
-        if (phase.maxGapMs >= (throttle === 1 ? 150 : 300)) warnings.push('Long captured frame interval during ' + name + ': ' + phase.maxGapMs + 'ms');
+        if (phase.changes < Math.floor(phaseSeconds[name] * rotation.fps) - 1) warnings.push('Low rendered frame count during ' + name);
+        if (phase.maxGapMs >= frameMs + (throttle === 1 ? 150 : 300)) warnings.push('Long captured frame interval during ' + name + ': ' + phase.maxGapMs + 'ms');
       }
-      if (phases.hold.changes / 5.2 < (throttle === 1 ? 22 : 15)) warnings.push('Hold cadence below target');
-      results.push({ cpuThrottle: throttle, captures: captures.length, observedHoldFps: Number((phases.hold.changes / 5.2).toFixed(1)), phases, warnings });
+      if (phases.hold.changes / 5.2 < rotation.fps * .85) warnings.push('Hold cadence below target');
+      results.push({ cpuThrottle: throttle, targetFps: rotation.fps, captures: captures.length, observedHoldFps: Number((phases.hold.changes / 5.2).toFixed(1)), phases, warnings });
       console.log(JSON.stringify(results.at(-1)));
       // Throttled screencasts are hardware-dependent diagnostics; never hide their warnings.
       if (throttle === 1) assert.deepEqual(warnings, [], 'Normal-speed rendering must meet the frame cadence budget');

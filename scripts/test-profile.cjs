@@ -8,12 +8,12 @@ const { chromium } = require('playwright');
 const sharp = require('sharp');
 
 const root = path.resolve(__dirname, '..');
-const out = path.join(root, 'previews/v16');
+const out = path.join(root, 'previews/v17');
 const rotation = JSON.parse(fs.readFileSync(path.join(root, 'assets/avatar-rotation.json'), 'utf8'));
 const resultDir = path.join(root, 'test-results');
 fs.mkdirSync(out, { recursive: true });
 fs.mkdirSync(resultDir, { recursive: true });
-const report = { checkedAt: new Date().toISOString(), revision: 'continuous-compact-turntable-v16', structure: [], animation: [], responsive: [], cycles: [], limitations: ['Local Chrome only. GitHub-hosted rendering is verified separately after publication.', 'GitHub uses native table borders and two columns for the README cards; the local HTML preview uses responsive CSS cards.', 'The motion toggle is available in the local HTML preview, not inside GitHub image embeds.', 'AI-generated angles approximate the unseen sides and back; interpolated frames are not a reconstructed 3D model.'] };
+const report = { checkedAt: new Date().toISOString(), revision: 'crisp-discrete-turntable-v17', structure: [], animation: [], responsive: [], cycles: [], limitations: ['Local Chrome only. GitHub-hosted rendering is verified separately after publication.', 'GitHub uses native table borders and two columns for the README cards; the local HTML preview uses responsive CSS cards.', 'The motion toggle is available in the local HTML preview, not inside GitHub image embeds.', 'The sixteen AI-generated views approximate the unseen sides and back; they are not a reconstructed 3D model.'] };
 const geometry = mobile => mobile ? { width: 320, height: 462, x: 64, y: 64, size: 192 } : { width: 960, height: 352, x: 32, y: 76, size: 224 };
 
 async function raw(image, rect) {
@@ -175,9 +175,46 @@ async function positions(page, seconds) {
   }, seconds);
 }
 
+async function verifySourceViews() {
+  const source = JSON.parse(fs.readFileSync(path.join(root, 'assets/avatar-turntable.json'), 'utf8'));
+  assert.equal(rotation.frames, source.order.length);
+  assert.equal(rotation.frames, 16);
+  assert.equal(rotation.fps, 3);
+  assert.equal(rotation.interpolation, 'none');
+  assert.equal(rotation.lossless, true);
+  const atlas = path.join(root, 'assets', rotation.image);
+  const dimensions = await sharp(atlas).metadata();
+  assert.equal(dimensions.width, rotation.width);
+  assert.equal(dimensions.height, rotation.height);
+  const original = fs.readFileSync(path.join(root, 'assets', source.image)).toString('base64');
+  let maxDifference = 0;
+  for (const [index, cell] of source.order.entries()) {
+    const view = source.frames[cell];
+    const [x, y, width, height] = view.crop;
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + rotation.size + '" height="' + rotation.size + '" viewBox="' + view.viewBox.join(' ') + '">' +
+      '<defs><clipPath id="source-crop"><rect x="' + x + '" y="' + y + '" width="' + width + '" height="' + height + '"/></clipPath></defs>' +
+      '<image width="' + source.width + '" height="' + source.height + '" clip-path="url(#source-crop)" href="data:image/png;base64,' + original + '"/></svg>';
+    const expected = await sharp(Buffer.from(svg)).ensureAlpha().raw().toBuffer();
+    const actual = await sharp(atlas).extract({ left: index % rotation.columns * rotation.size, top: Math.floor(index / rotation.columns) * rotation.size, width: rotation.size, height: rotation.size }).ensureAlpha().raw().toBuffer();
+    assert.equal(actual.length, expected.length);
+    for (let pixel = 0; pixel < actual.length; pixel += 4) {
+      const alpha = actual[pixel + 3], expectedAlpha = expected[pixel + 3];
+      assert(Math.abs(alpha - expectedAlpha) <= 1, 'Source angle alpha must be preserved');
+      // Ignore invisible RGB and allow one level of alpha-compositing rounding.
+      for (let channel = 0; channel < 3; channel++) {
+        const difference = Math.abs(actual[pixel + channel] * alpha - expected[pixel + channel] * expectedAlpha) / 255;
+        maxDifference = Math.max(maxDifference, difference);
+        assert(difference <= 1, 'Atlas frame ' + index + ' must match its unblended source angle');
+      }
+    }
+  }
+  return { frames: rotation.frames, interpolation: rotation.interpolation, lossless: true, maxPremultipliedChannelDifference: maxDifference, bytes: fs.statSync(atlas).size };
+}
+
 (async () => {
   let browser;
   try {
+    report.sourceViews = await verifySourceViews();
     const content = JSON.parse(fs.readFileSync(path.join(root, 'profile-content.json'), 'utf8'));
     const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
     const imageVersion = createHash('sha256').update(['dark.svg', 'dark-mobile.svg', 'light.svg', 'light-mobile.svg'].map(file => fs.readFileSync(path.join(root, file), 'utf8')).join('')).digest('hex').slice(0, 12);
@@ -341,7 +378,9 @@ async function positions(page, seconds) {
         const state = await positions(page, seconds);
         assert.equal(state.turn.x, -(index % rotation.columns) * g.size || 0);
         assert.equal(state.turn.y, -Math.floor(index / rotation.columns) * g.size || 0);
-        if (index % 8 === 0) turnStates.push({ seconds, frame: index });
+        turnStates.push({ seconds, frame: index });
+        const held = await positions(page, (index + .95) / rotation.fps);
+        assert.deepEqual(held.turn, state.turn, 'Each angle must hold without sliding or blending between cells');
       }
       for (const seconds of [0, 1.1, 7.401, 8.5, 10.2, 10.801, 21.201]) {
         const index = Math.floor(seconds * rotation.fps) % rotation.frames;
@@ -391,7 +430,7 @@ async function positions(page, seconds) {
       const continuousMotion = [];
       for (const [phase, start] of [['reveal', .35], ['hold', 3.2], ['erase', 8], ['silhouette', 9.9]]) {
         const first = await frame(page, source, g, start, { silhouetteOnly: true });
-        const next = await frame(page, source, g, start + .3, { silhouetteOnly: true });
+        const next = await frame(page, source, g, start + 1 / rotation.fps + .02, { silhouetteOnly: true });
         assert(delta(await raw(first, portraitArea), await raw(next, portraitArea)) > 1, 'Rotation must visibly continue during ' + phase);
         continuousMotion.push({ phase, rotates: true });
       }
@@ -425,7 +464,7 @@ async function positions(page, seconds) {
       }
       const repeated = await frame(page, source, g, 46.7, { freezeTurn: true });
       assert.equal(delta(await raw(full), await raw(repeated)), 0, 'Both animation cycles must repeat without drift');
-      report.animation.push({ name, portrait: 'continuous 24fps rotation, top-down reveal and bottom-up erase', portraitPeriodSeconds: 10.8, rotationPeriodSeconds: rotation.durationMs / 1000, rotationFrames: rotation.frames, continuousMotion, phaseSeconds: { reveal: 2.2, hold: 5.2, erase: 2.2, idle: 1.2 }, turnStates, uniqueAngles: turnHashes.size, scanDirection: scanStates, silhouetteChecks, silhouetteOpacity: .02, silhouetteVisibility, scanHeight: 4, titlePeriodSeconds: 10.8, characterStepping: typeStates, information: 'parallel whole-character typing and reverse deletion', rowStates, textChecks, erasedPortrait: 'rotating faint silhouette only', emptyInformationPixels: 0, reducedMotion: 'pass', fallback: 'pass', loopBoundary: 'pass' });
+      report.animation.push({ name, portrait: 'continuous discrete rotation, sixteen unblended angles, top-down reveal and bottom-up erase', portraitPeriodSeconds: 10.8, rotationPeriodSeconds: rotation.durationMs / 1000, rotationFrames: rotation.frames, continuousMotion, phaseSeconds: { reveal: 2.2, hold: 5.2, erase: 2.2, idle: 1.2 }, turnStates, uniqueAngles: turnHashes.size, scanDirection: scanStates, silhouetteChecks, silhouetteOpacity: .02, silhouetteVisibility, scanHeight: 4, titlePeriodSeconds: 10.8, characterStepping: typeStates, information: 'parallel whole-character typing and reverse deletion', rowStates, textChecks, erasedPortrait: 'rotating faint silhouette only', emptyInformationPixels: 0, reducedMotion: 'pass', fallback: 'pass', loopBoundary: 'pass' });
       console.log('Validated ' + name + ': parallel character typing, synchronized deletion, stationary glyphs, 2% silhouette and reduced motion');
     }
 
