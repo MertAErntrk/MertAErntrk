@@ -3,7 +3,8 @@ const path = require('node:path');
 
 const root = path.resolve(__dirname, '..');
 const profile = JSON.parse(fs.readFileSync(path.join(root, 'profile-content.json'), 'utf8'));
-const portrait = fs.readFileSync(path.join(root, 'assets/avatar2-500.png')).toString('base64');
+const turntable = JSON.parse(fs.readFileSync(path.join(root, 'assets/avatar-turntable.json'), 'utf8'));
+const portrait = fs.readFileSync(path.join(root, 'assets', turntable.image)).toString('base64');
 const esc = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const palettes = {
   dark: { bg: '#0B0F14', fg: '#E6EDF3', muted: '#A8B3C1', accent: '#22D3EE', border: '#34414E', empty: '#111820' },
@@ -50,16 +51,25 @@ function svg(theme, mobile) {
     Array.from(row.value, (char, index) => '<tspan class="motion typed-char char-' + row.id + '-' + index + '">' + esc(char) + '</tspan>').join('') + '</text>';
   const roleGlyphs = Array.from(role, (_, index) => ({ index, ...glyphTiming(index, role.length) }));
   const caretAt = count => 'transform:translateX(' + Number((roleWidth * count / role.length).toFixed(6)) + 'px)';
+  const turnFrames = turntable.order.map((cell, index) => ({
+    ...turntable.frames[cell], cell, index,
+    on: percent(timing.reveal + timing.hold * index / turntable.order.length),
+    off: percent(timing.reveal + timing.hold * (index + 1) / turntable.order.length),
+  }));
 
   return [
     '<svg xmlns="http://www.w3.org/2000/svg" id="still" width="' + width + '" height="' + height + '" viewBox="0 0 ' + width + ' ' + height + '" role="img" aria-labelledby="title desc">',
     '<title id="title">' + esc(profile.name + ' - ' + role) + '</title>',
-    '<desc id="desc">Data pipelines, lakehouse design and LLM applications. A downward scan reveals the stationary portrait while the name, role, description and handle are typed letter by letter in parallel. The upward scan erases all text in parallel, from the last letter to the first, leaving a faint portrait silhouette.</desc>',
+    '<desc id="desc">Data pipelines, lakehouse design and LLM applications. A downward scan reveals the pixel portrait while the name, role, description and handle are typed letter by letter in parallel. The portrait makes a sixteen-view turn showing front, side and back views, then returns to its initial pose for the upward erasing scan. Reduced motion keeps the initial portrait and all text visible.</desc>',
     '<style>',
     'text{font-family:Arial,Helvetica,sans-serif;letter-spacing:0;fill:' + c.fg + '}',
     '.name{font-weight:700}.role,.prompt{fill:' + c.accent + '}.body,.muted{fill:' + c.muted + '}',
     '.mono{font-family:Consolas,"Courier New",monospace}',
     '.motion{transform:none;transform-origin:0 0}.typed-char{visibility:visible}.portrait-image{transform:none}.scan-line,.type-cursor{display:none}',
+    '.turn-frame{visibility:hidden}.turn-0{visibility:visible}',
+    ...turnFrames.map(frame => '@keyframes turn-' + frame.index + '{' + (frame.index === 0 ?
+      '0%{visibility:visible}' + frame.off + '%{visibility:hidden}' + percent(eraseAt) + '%,100%{visibility:visible}' :
+      '0%{visibility:hidden}' + frame.on + '%{visibility:visible}' + frame.off + '%,100%{visibility:hidden}') + '}'),
     // The mask changes coverage while the portrait stays in the same position.
     '@keyframes portrait-scan{0%{transform:scaleY(0)}' + percent(timing.reveal) + '%,' + percent(eraseAt) + '%{transform:scaleY(1)}' + percent(emptyAt) + '%,100%{transform:scaleY(0)}}',
     '@keyframes scanner{0%{transform:translateY(0);visibility:visible}' + percent(timing.reveal - .1) + '%{transform:translateY(' + size + 'px);visibility:visible}' + percent(timing.reveal) + '%,' + percent(eraseAt - .1) + '%{transform:translateY(' + size + 'px);visibility:hidden}' + percent(eraseAt) + '%{transform:translateY(' + size + 'px);visibility:visible}' + percent(emptyAt - .1) + '%{transform:translateY(0);visibility:visible}' + percent(emptyAt) + '%,100%{transform:translateY(0);visibility:hidden}}',
@@ -68,6 +78,7 @@ function svg(theme, mobile) {
     '@keyframes caret-travel{' + roleGlyphs.map(glyph => glyph.on + '%{' + caretAt(glyph.index + 1) + '}').join('') + roleGlyphs.slice().reverse().map(glyph => glyph.off + '%{' + caretAt(glyph.index) + '}').join('') + '100%{' + caretAt(0) + '}}',
     '@keyframes caret-blink{0%,49.999%{transform:scaleY(1)}50%,100%{transform:scaleY(0)}}',
     '@media(prefers-reduced-motion:no-preference){',
+    ...turnFrames.map(frame => '.turn-' + frame.index + '{animation:turn-' + frame.index + ' ' + cycleSeconds + 's step-end infinite}'),
     '.portrait-window{animation:portrait-scan ' + cycleSeconds + 's linear infinite}.scan-line{display:block;animation:scanner ' + cycleSeconds + 's linear infinite}',
     ...glyphs.map(glyph => '.char-' + glyph.id + '{animation:glyph-' + glyph.id + ' ' + cycleSeconds + 's step-end infinite}'),
     '.type-status{animation:role-status ' + cycleSeconds + 's step-end infinite}',
@@ -78,7 +89,11 @@ function svg(theme, mobile) {
     ':root:target .motion{animation:none;transform:none}:root:target .scan-line,:root:target .type-cursor{display:none}',
     '</style>',
     '<defs>',
-    '<image id="portrait" width="' + size + '" height="' + size + '" href="data:image/png;base64,' + portrait + '"/>',
+    '<image id="portrait-atlas" width="' + turntable.width + '" height="' + turntable.height + '" href="data:image/png;base64,' + portrait + '"/>',
+    ...turnFrames.map(frame => '<clipPath id="cell-' + frame.index + '"><rect x="' + frame.crop[0] + '" y="' + frame.crop[1] + '" width="' + frame.crop[2] + '" height="' + frame.crop[3] + '"/></clipPath>'),
+    '<g id="portrait">',
+    ...turnFrames.map(frame => '<svg class="motion turn-frame turn-' + frame.index + '" data-cell="' + frame.cell + '" width="' + size + '" height="' + size + '" viewBox="' + frame.viewBox.join(' ') + '" overflow="hidden"><g clip-path="url(#cell-' + frame.index + ')"><use href="#portrait-atlas"/></g></svg>'),
+    '</g>',
     '<mask id="portrait-alpha" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse" x="0" y="0" width="' + size + '" height="' + size + '" style="mask-type:alpha"><use href="#portrait"/></mask>',
     '<clipPath id="portrait-frame"><rect width="' + size + '" height="' + size + '" rx="8"/></clipPath>',
     '<clipPath id="portrait-reveal"><rect class="motion portrait-window" width="' + size + '" height="' + size + '"/></clipPath>',
