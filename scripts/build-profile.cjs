@@ -1,9 +1,10 @@
 const fs = require('node:fs');
 const path = require('node:path');
+const { createHash } = require('node:crypto');
 
 const root = path.resolve(__dirname, '..');
 const profile = JSON.parse(fs.readFileSync(path.join(root, 'profile-content.json'), 'utf8'));
-const turntable = JSON.parse(fs.readFileSync(path.join(root, 'assets/avatar-turntable.json'), 'utf8'));
+const turntable = JSON.parse(fs.readFileSync(path.join(root, 'assets/avatar-rotation.json'), 'utf8'));
 const portrait = fs.readFileSync(path.join(root, 'assets', turntable.image)).toString('base64');
 const esc = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const palettes = {
@@ -51,25 +52,24 @@ function svg(theme, mobile) {
     Array.from(row.value, (char, index) => '<tspan class="motion typed-char char-' + row.id + '-' + index + '">' + esc(char) + '</tspan>').join('') + '</text>';
   const roleGlyphs = Array.from(role, (_, index) => ({ index, ...glyphTiming(index, role.length) }));
   const caretAt = count => 'transform:translateX(' + Number((roleWidth * count / role.length).toFixed(6)) + 'px)';
-  const turnFrames = turntable.order.map((cell, index) => ({
-    ...turntable.frames[cell], cell, index,
-    on: percent(timing.reveal + timing.hold * index / turntable.order.length),
-    off: percent(timing.reveal + timing.hold * (index + 1) / turntable.order.length),
+  const turnFrames = Array.from({ length: turntable.frames }, (_, index) => ({
+    offset: 100 * index / turntable.frames,
+    x: -(index % turntable.columns) * size,
+    y: -Math.floor(index / turntable.columns) * size,
   }));
 
   return [
     '<svg xmlns="http://www.w3.org/2000/svg" id="still" width="' + width + '" height="' + height + '" viewBox="0 0 ' + width + ' ' + height + '" role="img" aria-labelledby="title desc">',
     '<title id="title">' + esc(profile.name + ' - ' + role) + '</title>',
-    '<desc id="desc">Data pipelines, lakehouse design and LLM applications. A downward scan reveals the pixel portrait while the name, role, description and handle are typed letter by letter in parallel. The portrait makes a sixteen-view turn showing front, side and back views, then returns to its initial pose for the upward erasing scan. Reduced motion keeps the initial portrait and all text visible.</desc>',
+    '<desc id="desc">Data pipelines, lakehouse design and LLM applications. A downward scan reveals the pixel portrait while the name, role, description and handle are typed letter by letter in parallel. The portrait rotates continuously through front, side and back views, including during both scans and the faint silhouette interval. Reduced motion keeps the initial portrait and all text visible.</desc>',
     '<style>',
     'text{font-family:Arial,Helvetica,sans-serif;letter-spacing:0;fill:' + c.fg + '}',
     '.name{font-weight:700}.role,.prompt{fill:' + c.accent + '}.body,.muted{fill:' + c.muted + '}',
     '.mono{font-family:Consolas,"Courier New",monospace}',
     '.motion{transform:none;transform-origin:0 0}.typed-char{visibility:visible}.portrait-image{transform:none}.scan-line,.type-cursor{display:none}',
-    '.turn-frame{visibility:hidden}.turn-0{visibility:visible}',
-    ...turnFrames.map(frame => '@keyframes turn-' + frame.index + '{' + (frame.index === 0 ?
-      '0%{visibility:visible}' + frame.off + '%{visibility:hidden}' + percent(eraseAt) + '%,100%{visibility:visible}' :
-      '0%{visibility:hidden}' + frame.on + '%{visibility:visible}' + frame.off + '%,100%{visibility:hidden}') + '}'),
+    '.portrait-motion{display:none}.portrait-static{display:block}',
+    // One shared atlas animation keeps the image, silhouette and alpha mask in sync.
+    '@keyframes portrait-turn{' + turnFrames.map(frame => frame.offset + '%{transform:translate(' + frame.x + 'px,' + frame.y + 'px)}').join('') + '100%{transform:translate(0,0)}}',
     // The mask changes coverage while the portrait stays in the same position.
     '@keyframes portrait-scan{0%{transform:scaleY(0)}' + percent(timing.reveal) + '%,' + percent(eraseAt) + '%{transform:scaleY(1)}' + percent(emptyAt) + '%,100%{transform:scaleY(0)}}',
     '@keyframes scanner{0%{transform:translateY(0);visibility:visible}' + percent(timing.reveal - .1) + '%{transform:translateY(' + size + 'px);visibility:visible}' + percent(timing.reveal) + '%,' + percent(eraseAt - .1) + '%{transform:translateY(' + size + 'px);visibility:hidden}' + percent(eraseAt) + '%{transform:translateY(' + size + 'px);visibility:visible}' + percent(emptyAt - .1) + '%{transform:translateY(0);visibility:visible}' + percent(emptyAt) + '%,100%{transform:translateY(0);visibility:hidden}}',
@@ -78,22 +78,21 @@ function svg(theme, mobile) {
     '@keyframes caret-travel{' + roleGlyphs.map(glyph => glyph.on + '%{' + caretAt(glyph.index + 1) + '}').join('') + roleGlyphs.slice().reverse().map(glyph => glyph.off + '%{' + caretAt(glyph.index) + '}').join('') + '100%{' + caretAt(0) + '}}',
     '@keyframes caret-blink{0%,49.999%{transform:scaleY(1)}50%,100%{transform:scaleY(0)}}',
     '@media(prefers-reduced-motion:no-preference){',
-    ...turnFrames.map(frame => '.turn-' + frame.index + '{animation:turn-' + frame.index + ' ' + cycleSeconds + 's step-end infinite}'),
+    '.portrait-motion{display:block}.portrait-static{display:none}',
+    '.portrait-atlas{animation:portrait-turn ' + turntable.durationMs + 'ms step-end infinite}',
     '.portrait-window{animation:portrait-scan ' + cycleSeconds + 's linear infinite}.scan-line{display:block;animation:scanner ' + cycleSeconds + 's linear infinite}',
     ...glyphs.map(glyph => '.char-' + glyph.id + '{animation:glyph-' + glyph.id + ' ' + cycleSeconds + 's step-end infinite}'),
     '.type-status{animation:role-status ' + cycleSeconds + 's step-end infinite}',
     '.type-cursor{display:block}.cursor-travel{animation:caret-travel ' + cycleSeconds + 's step-end infinite}',
     '.cursor-blink{animation:caret-blink 1s steps(1,end) infinite}',
     '}',
-    '@media(prefers-reduced-motion:reduce){.motion{animation:none;transform:none}.scan-line,.type-cursor{display:none}}',
-    ':root:target .motion{animation:none;transform:none}:root:target .scan-line,:root:target .type-cursor{display:none}',
+    '@media(prefers-reduced-motion:reduce){.motion{animation:none!important;transform:none!important}.scan-line,.type-cursor{display:none}}',
+    ':root:target .motion{animation:none!important;transform:none!important}:root:target .scan-line,:root:target .type-cursor{display:none}',
+    ':root:target .portrait-motion{display:none}:root:target .portrait-static{display:block}',
     '</style>',
     '<defs>',
-    '<image id="portrait-atlas" width="' + turntable.width + '" height="' + turntable.height + '" href="data:image/png;base64,' + portrait + '"/>',
-    ...turnFrames.map(frame => '<clipPath id="cell-' + frame.index + '"><rect x="' + frame.crop[0] + '" y="' + frame.crop[1] + '" width="' + frame.crop[2] + '" height="' + frame.crop[3] + '"/></clipPath>'),
-    '<g id="portrait">',
-    ...turnFrames.map(frame => '<svg class="motion turn-frame turn-' + frame.index + '" data-cell="' + frame.cell + '" width="' + size + '" height="' + size + '" viewBox="' + frame.viewBox.join(' ') + '" overflow="hidden"><g clip-path="url(#cell-' + frame.index + ')"><use href="#portrait-atlas"/></g></svg>'),
-    '</g>',
+    '<image id="portrait-atlas-image" width="' + size * turntable.columns + '" height="' + size * turntable.rows + '" href="data:' + turntable.mime + ';base64,' + portrait + '"/>',
+    '<g id="portrait" clip-path="url(#portrait-frame)"><use class="motion portrait-atlas" href="#portrait-atlas-image"/></g>',
     '<mask id="portrait-alpha" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse" x="0" y="0" width="' + size + '" height="' + size + '" style="mask-type:alpha"><use href="#portrait"/></mask>',
     '<clipPath id="portrait-frame"><rect width="' + size + '" height="' + size + '" rx="8"/></clipPath>',
     '<clipPath id="portrait-reveal"><rect class="motion portrait-window" width="' + size + '" height="' + size + '"/></clipPath>',
@@ -105,8 +104,8 @@ function svg(theme, mobile) {
     '<path d="M0 44H' + width + '" stroke="' + c.border + '"/>',
     '<g id="portrait-area" transform="translate(' + x + ' ' + y + ')">',
     '<rect width="' + size + '" height="' + size + '" rx="8" fill="' + c.empty + '"/>',
-    '<g clip-path="url(#portrait-frame)"><use class="portrait-silhouette" href="#portrait" opacity=".02"/><g clip-path="url(#portrait-reveal)"><use class="portrait-image" href="#portrait"/></g>',
-    '<g mask="url(#portrait-alpha)"><rect class="motion scan-line" y="-2" width="' + size + '" height="4" fill="' + c.accent + '"/></g></g>',
+    '<g clip-path="url(#portrait-frame)"><g class="portrait-motion"><use class="portrait-silhouette" href="#portrait" opacity=".02"/><g clip-path="url(#portrait-reveal)"><use class="portrait-image" href="#portrait"/></g>',
+    '<g mask="url(#portrait-alpha)"><rect class="motion scan-line" y="-2" width="' + size + '" height="4" fill="' + c.accent + '"/></g></g><use class="portrait-static" href="#portrait-atlas-image"/></g>',
     '<rect x=".5" y=".5" width="' + (size - 1) + '" height="' + (size - 1) + '" rx="8" fill="none" stroke="' + c.border + '"/>',
     '</g>',
     ...rows.map(row => '<g id="info-' + row.id + '" class="info-row" transform="translate(' + tx + ' ' + row.y + ')">' +
@@ -116,6 +115,13 @@ function svg(theme, mobile) {
     '</svg>\n',
   ].join('\n');
 }
+
+const svgFiles = {};
+for (const theme of Object.keys(palettes)) {
+  for (const mobile of [false, true]) svgFiles[theme + (mobile ? '-mobile' : '') + '.svg'] = svg(theme, mobile);
+}
+const imageVersion = createHash('sha256').update(Object.values(svgFiles).join('')).digest('hex').slice(0, 12);
+const versionedSource = source => source.replace('.svg', '.svg?v=' + imageVersion);
 
 function picture() {
   const sources = [
@@ -127,8 +133,8 @@ function picture() {
     ['(max-width: 767px)', 'light-mobile.svg'],
     ['(prefers-color-scheme: dark)', 'dark.svg'],
   ];
-  return '<picture>\n' + sources.map(([media, src]) => '  <source media="' + media + '" srcset="' + src + '" />').join('\n') +
-    '\n  <img src="light.svg" width="100%" alt="' + esc(profile.name + ', ' + profile.roles.join(', ') + '. Data pipelines, lakehouse design and LLM applications.') + '" />\n</picture>';
+  return '<picture>\n' + sources.map(([media, src]) => '  <source media="' + media + '" srcset="' + versionedSource(src) + '" />').join('\n') +
+    '\n  <img src="' + versionedSource('light.svg') + '" width="100%" alt="' + esc(profile.name + ', ' + profile.roles.join(', ') + '. Data pipelines, lakehouse design and LLM applications.') + '" />\n</picture>';
 }
 
 function architectureTable() {
@@ -189,18 +195,15 @@ const preview = [
   'const preference=matchMedia("(prefers-reduced-motion: reduce)");',
   'const button=document.querySelector("#motion-toggle");const portrait=document.querySelector("picture");',
   'const sources=[...portrait.querySelectorAll("source")];const image=portrait.querySelector("img");',
-  'const originals=sources.map(source=>source.srcset);let manualStatic=false;',
-  'function updateMotion(){const still=preference.matches||manualStatic;sources.forEach((source,index)=>source.srcset=still?originals[index].split("#")[0]+"#still":originals[index]);image.src=still?"light.svg#still":"light.svg";button.setAttribute("aria-pressed",String(still));button.disabled=preference.matches;const label=preference.matches?"Reduced motion enabled":still?"Animate profile":"Show static profile";button.setAttribute("aria-label",label);button.title=label;button.querySelector("img").src=still?"assets/play.svg":"assets/pause.svg";}',
+  'const originals=sources.map(source=>source.srcset);const defaultImage=image.getAttribute("src");let manualStatic=false;',
+  'function updateMotion(){const still=preference.matches||manualStatic;sources.forEach((source,index)=>source.srcset=still?originals[index].split("#")[0]+"#still":originals[index]);image.src=defaultImage+(still?"#still":"");button.setAttribute("aria-pressed",String(still));button.disabled=preference.matches;const label=preference.matches?"Reduced motion enabled":still?"Animate profile":"Show static profile";button.setAttribute("aria-label",label);button.title=label;button.querySelector("img").src=still?"assets/play.svg":"assets/pause.svg";}',
   'button.addEventListener("click",()=>{manualStatic=!manualStatic;updateMotion()});preference.addEventListener("change",updateMotion);updateMotion();',
   '</script></body></html>\n',
 ].join('\n');
 
-for (const theme of Object.keys(palettes)) {
-  for (const mobile of [false, true]) {
-    const name = theme + (mobile ? '-mobile' : '') + '.svg';
-    fs.writeFileSync(path.join(root, name), svg(theme, mobile));
-    console.log('Built ' + name);
-  }
+for (const [name, source] of Object.entries(svgFiles)) {
+  fs.writeFileSync(path.join(root, name), source);
+  console.log('Built ' + name);
 }
 fs.writeFileSync(path.join(root, 'README.md'), readme);
 fs.writeFileSync(path.join(root, 'preview.html'), preview);

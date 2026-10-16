@@ -17,14 +17,14 @@ button img{width:18px;height:18px}button:hover{border-color:#0e7490;background:#
 </style></head><body><main>
 <div class="tools"><button id="motion-toggle" type="button" aria-pressed="false" aria-label="Show static profile" title="Show static profile"><img src="assets/pause.svg" alt="" /></button></div>
 <picture>
-  <source media="(prefers-reduced-motion: reduce) and (max-width: 767px) and (prefers-color-scheme: dark)" srcset="dark-mobile.svg#still" />
-  <source media="(prefers-reduced-motion: reduce) and (max-width: 767px)" srcset="light-mobile.svg#still" />
-  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="dark.svg#still" />
-  <source media="(prefers-reduced-motion: reduce)" srcset="light.svg#still" />
-  <source media="(max-width: 767px) and (prefers-color-scheme: dark)" srcset="dark-mobile.svg" />
-  <source media="(max-width: 767px)" srcset="light-mobile.svg" />
-  <source media="(prefers-color-scheme: dark)" srcset="dark.svg" />
-  <img src="light.svg" width="100%" alt="Mert Ali ERENTÜRK, Data &amp; AI Engineer. Data pipelines, lakehouse design and LLM applications." />
+  <source media="(prefers-reduced-motion: reduce) and (max-width: 767px) and (prefers-color-scheme: dark)" srcset="dark-mobile.svg?v=9108f2460bb7#still" />
+  <source media="(prefers-reduced-motion: reduce) and (max-width: 767px)" srcset="light-mobile.svg?v=9108f2460bb7#still" />
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="dark.svg?v=9108f2460bb7#still" />
+  <source media="(prefers-reduced-motion: reduce)" srcset="light.svg?v=9108f2460bb7#still" />
+  <source media="(max-width: 767px) and (prefers-color-scheme: dark)" srcset="dark-mobile.svg?v=9108f2460bb7" />
+  <source media="(max-width: 767px)" srcset="light-mobile.svg?v=9108f2460bb7" />
+  <source media="(prefers-color-scheme: dark)" srcset="dark.svg?v=9108f2460bb7" />
+  <img src="light.svg?v=9108f2460bb7" width="100%" alt="Mert Ali ERENTÜRK, Data &amp; AI Engineer. Data pipelines, lakehouse design and LLM applications." />
 </picture>
 <section aria-labelledby="about"><h2 id="about">About</h2><p class="roles">Data &amp; AI Engineer</p><p>I&#39;m Mert Ali ERENTÜRK, a Data &amp; AI Engineer. I work on data pipelines, lakehouse design and LLM applications.</p><p>I&#39;m also working on mobile apps and LangGraph workflows. I care about where the data comes from, what happens when a job fails, and how to check an AI output.</p></section>
 <section aria-labelledby="architecture"><h2 id="architecture">Architecture &amp; System Design</h2><div class="capabilities"><article><h3>Lakehouse Architecture</h3><p>Raw, cleaned and serving layers, with clear rules for how data moves between them. Schema changes, table layout and data quality checks are the main design decisions.</p></article>
@@ -43,7 +43,7 @@ button img{width:18px;height:18px}button:hover{border-color:#0e7490;background:#
 const preference=matchMedia("(prefers-reduced-motion: reduce)");
 const button=document.querySelector("#motion-toggle");const portrait=document.querySelector("picture");
 const sources=[...portrait.querySelectorAll("source")];const image=portrait.querySelector("img");
-const originals=sources.map(source=>source.srcset);let manualStatic=false;
-function updateMotion(){const still=preference.matches||manualStatic;sources.forEach((source,index)=>source.srcset=still?originals[index].split("#")[0]+"#still":originals[index]);image.src=still?"light.svg#still":"light.svg";button.setAttribute("aria-pressed",String(still));button.disabled=preference.matches;const label=preference.matches?"Reduced motion enabled":still?"Animate profile":"Show static profile";button.setAttribute("aria-label",label);button.title=label;button.querySelector("img").src=still?"assets/play.svg":"assets/pause.svg";}
+const originals=sources.map(source=>source.srcset);const defaultImage=image.getAttribute("src");let manualStatic=false;
+function updateMotion(){const still=preference.matches||manualStatic;sources.forEach((source,index)=>source.srcset=still?originals[index].split("#")[0]+"#still":originals[index]);image.src=defaultImage+(still?"#still":"");button.setAttribute("aria-pressed",String(still));button.disabled=preference.matches;const label=preference.matches?"Reduced motion enabled":still?"Animate profile":"Show static profile";button.setAttribute("aria-label",label);button.title=label;button.querySelector("img").src=still?"assets/play.svg":"assets/pause.svg";}
 button.addEventListener("click",()=>{manualStatic=!manualStatic;updateMotion()});preference.addEventListener("change",updateMotion);updateMotion();
 </script></body></html>

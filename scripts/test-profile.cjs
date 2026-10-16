@@ -8,14 +8,13 @@ const { chromium } = require('playwright');
 const sharp = require('sharp');
 
 const root = path.resolve(__dirname, '..');
-const out = path.join(root, 'previews/v14');
+const out = path.join(root, 'previews/v16');
+const rotation = JSON.parse(fs.readFileSync(path.join(root, 'assets/avatar-rotation.json'), 'utf8'));
 const resultDir = path.join(root, 'test-results');
 fs.mkdirSync(out, { recursive: true });
 fs.mkdirSync(resultDir, { recursive: true });
-const report = { checkedAt: new Date().toISOString(), revision: 'sixteen-view-turntable-v14', structure: [], animation: [], responsive: [], cycles: [], limitations: ['Local Chrome only. GitHub-hosted rendering is verified separately after publication.', 'GitHub uses native table borders and two columns for the README cards; the local HTML preview uses responsive CSS cards.', 'The motion toggle is available in the local HTML preview, not inside GitHub image embeds.', 'AI-generated angles approximate the unseen sides and back; they are not a reconstructed 3D model.'] };
+const report = { checkedAt: new Date().toISOString(), revision: 'continuous-compact-turntable-v16', structure: [], animation: [], responsive: [], cycles: [], limitations: ['Local Chrome only. GitHub-hosted rendering is verified separately after publication.', 'GitHub uses native table borders and two columns for the README cards; the local HTML preview uses responsive CSS cards.', 'The motion toggle is available in the local HTML preview, not inside GitHub image embeds.', 'AI-generated angles approximate the unseen sides and back; interpolated frames are not a reconstructed 3D model.'] };
 const geometry = mobile => mobile ? { width: 320, height: 462, x: 64, y: 64, size: 192 } : { width: 960, height: 352, x: 32, y: 76, size: 224 };
-const buffers = new Map();
-const silhouetteBuffers = new Map();
 
 async function raw(image, rect) {
   const pipeline = sharp(image);
@@ -74,34 +73,35 @@ async function infoPixels(image, mobile, theme) {
   }
   return counts;
 }
-async function frame(page, source, g, seconds, { reduced = false, fallback = false, hideScan = false, silhouetteOnly = false, freezeTurn = false } = {}) {
+async function frame(page, source, g, seconds, { reduced = false, fallback = false, hideScan = false, silhouetteOnly = false, freezeTurn = false, fullPortrait = false } = {}) {
   await page.emulateMedia({ reducedMotion: reduced ? 'reduce' : 'no-preference' });
-  const src = await page.evaluate(({ source, seconds, fallback, hideScan, silhouetteOnly, freezeTurn }) => {
+  const src = await page.evaluate(({ source, seconds, fallback, hideScan, silhouetteOnly, freezeTurn, fullPortrait }) => {
     const doc = new DOMParser().parseFromString(source, 'image/svg+xml');
     const style = doc.createElementNS('http://www.w3.org/2000/svg', 'style');
     style.textContent = fallback ? '.motion{animation:none!important;transform:none!important}.scan-line,.type-cursor{display:none!important}' :
       '.motion{animation-play-state:paused!important;animation-delay:-' + seconds + 's!important}';
     if (hideScan) style.textContent += '.scan-line{display:none!important}';
     if (silhouetteOnly) style.textContent += '.portrait-image,.scan-line{display:none!important}';
-    if (freezeTurn) style.textContent += '.turn-frame{animation:none!important}';
+    if (freezeTurn) style.textContent += '.portrait-atlas{animation:none!important;transform:none!important}';
+    if (fullPortrait) style.textContent += '.portrait-window{animation:none!important;transform:none!important}.scan-line{display:none!important}';
     doc.documentElement.appendChild(style);
     return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(doc));
-  }, { source, seconds, fallback, hideScan, silhouetteOnly, freezeTurn });
+  }, { source, seconds, fallback, hideScan, silhouetteOnly, freezeTurn, fullPortrait });
   await page.setViewportSize({ width: g.width, height: g.height });
   await page.goto('about:blank');
   await page.setContent('<html><head><meta name="color-scheme" content="light dark"></head><body style="margin:0"><img alt="Profile test" style="display:block"></body></html>');
   await page.locator('img').evaluate((img, src) => new Promise((resolve, reject) => { img.onload = resolve; img.onerror = reject; img.src = src; }), src + (reduced ? '#still' : ''));
   return page.screenshot();
 }
-async function portraitAlpha(page, source, size) {
-  return page.evaluate(async ({ source, size }) => {
+async function portraitAlpha(page, source, size, seconds) {
+  return page.evaluate(async ({ source, size, seconds }) => {
     const doc = new DOMParser().parseFromString(source, 'image/svg+xml');
     for (const child of [...doc.documentElement.children]) if (!['defs', 'style'].includes(child.localName)) child.remove();
     doc.documentElement.setAttribute('width', size);
     doc.documentElement.setAttribute('height', size);
     doc.documentElement.setAttribute('viewBox', '0 0 ' + size + ' ' + size);
     const style = doc.createElementNS('http://www.w3.org/2000/svg', 'style');
-    style.textContent = '.motion{animation:none!important;transform:none!important}';
+    style.textContent = '.motion{animation-play-state:paused!important;animation-delay:-' + seconds + 's!important}';
     doc.documentElement.appendChild(style);
     const portrait = doc.createElementNS('http://www.w3.org/2000/svg', 'use');
     portrait.setAttribute('href', '#portrait');
@@ -115,7 +115,7 @@ async function portraitAlpha(page, source, size) {
     context.drawImage(image, 0, 0, size, size);
     const pixels = context.getImageData(0, 0, size, size).data;
     return Array.from({ length: size * size }, (_, index) => pixels[index * 4 + 3]);
-  }, { source, size });
+  }, { source, size, seconds });
 }
 async function scanCoverage(page, source, g, seconds, alpha) {
   const visible = await frame(page, source, g, seconds);
@@ -153,7 +153,7 @@ async function positions(page, seconds) {
       silhouetteOpacity: getComputedStyle(document.querySelector('.portrait-silhouette')).opacity,
       silhouetteTransform: getComputedStyle(document.querySelector('.portrait-silhouette')).transform,
       silhouetteAnimations: document.querySelector('.portrait-silhouette').getAnimations().length,
-      turnFrames: [...document.querySelectorAll('#portrait .turn-frame')].flatMap((frame, index) => getComputedStyle(frame).visibility === 'visible' ? [index] : []),
+      turn: matrix('.portrait-atlas'),
       information: ['name', 'role', 'summary-1', 'summary-2', 'meta'].map(id => {
         const line = document.querySelector('#info-' + id + ' .typed-line');
         const glyphs = [...line.querySelectorAll('.typed-char')];
@@ -180,6 +180,10 @@ async function positions(page, seconds) {
   try {
     const content = JSON.parse(fs.readFileSync(path.join(root, 'profile-content.json'), 'utf8'));
     const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
+    const imageVersion = createHash('sha256').update(['dark.svg', 'dark-mobile.svg', 'light.svg', 'light-mobile.svg'].map(file => fs.readFileSync(path.join(root, file), 'utf8')).join('')).digest('hex').slice(0, 12);
+    const imageReferences = [...readme.matchAll(/(?:src|srcset)="([^"]+)"/g)].map(match => match[1]);
+    assert.equal(imageReferences.length, 8);
+    assert(imageReferences.every(source => source.includes('?v=' + imageVersion)), 'All GitHub image sources must invalidate stale assets after a content change');
     assert(!/## Toolkit|Solution Architect|solution architecture/i.test(readme));
     assert(!/at the intersection|intelligent applications|coherent platform|agentic systems/i.test(readme));
     assert(!/\bPython\b|\bSQL\b/.test(readme));
@@ -252,19 +256,20 @@ async function positions(page, seconds) {
       }, source);
       assert.equal(structure.parserErrors, 0);
       assert.equal(structure.images, 1);
-      assert.equal(structure.uses, 19);
+      assert.equal(structure.uses, 5, 'One shared atlas feeds the full portrait, silhouette, scanner alpha mask and static fallback');
       assert.equal(structure.alphaMask, 'alpha');
       assert.equal(structure.alphaSource, '#portrait');
       assert.equal(structure.scannerMask, 'url(#portrait-alpha)');
       assert.equal(structure.scannerHeight, 4);
       assert.deepEqual(structure.opacityOwners, ['portrait-silhouette']);
-      assert.equal(structure.animatedOpacity, false, 'Only the stationary silhouette has reduced opacity');
+      assert.equal(structure.animatedOpacity, false, 'Only the rotating silhouette has reduced opacity');
       assert.deepEqual(structure.missingReferences, []);
       assert.deepEqual(structure.externalResources, []);
       assert.equal(structure.scripts, 0);
       assert.equal(structure.clippedInformation, false, 'Typing must reveal whole characters, not crop glyphs');
-      assert.equal(structure.durations.length, structure.typedCharacters + 22);
-      assert.deepEqual([...structure.durations].sort((a,b) => a-b), [1000, ...Array(structure.typedCharacters + 21).fill(10800)]);
+      assert.equal(structure.durations.length, structure.typedCharacters + 7);
+      assert.deepEqual([...structure.durations].sort((a,b) => a-b), [1000, rotation.durationMs, ...Array(structure.typedCharacters + 5).fill(10800)]);
+      assert(Buffer.byteLength(source) < 1450000, 'Keep every animated SVG within the 1.45 MB loading budget');
       const expectedPhaseMs = [0, 2200, 7400, 9600, 10800];
       assert.equal(structure.portraitPhaseMs.length, expectedPhaseMs.length);
       structure.portraitPhaseMs.forEach((milliseconds, index) => assert(Math.abs(milliseconds - expectedPhaseMs[index]) < .001, 'Requested phase boundaries must be exact'));
@@ -331,14 +336,19 @@ async function positions(page, seconds) {
       assert(typeStates[0].characters === 1 && typeStates[3].characters === 18 && typeStates[6].characters === 0);
       assert(typeStates[1].characters < typeStates[2].characters && typeStates[4].characters > typeStates[5].characters);
       const turnStates = [];
-      for (let index = 0; index < 16; index++) {
-        const seconds = 2.2 + 5.2 * (index + .5) / 16;
+      for (let index = 0; index < rotation.frames; index++) {
+        const seconds = (index + .5) / rotation.fps;
         const state = await positions(page, seconds);
-        assert.deepEqual(state.turnFrames, [index], 'Exactly one angle must be visible during the turn');
-        assert.equal(state.mask.scaleY, 1, 'Turn only while the portrait is fully revealed');
-        turnStates.push({ seconds, frame: index });
+        assert.equal(state.turn.x, -(index % rotation.columns) * g.size || 0);
+        assert.equal(state.turn.y, -Math.floor(index / rotation.columns) * g.size || 0);
+        if (index % 8 === 0) turnStates.push({ seconds, frame: index });
       }
-      for (const seconds of [0, 1.1, 7.401, 8.5, 10.2]) assert.deepEqual((await positions(page, seconds)).turnFrames, [0], 'Scanning and idle use the original orientation');
+      for (const seconds of [0, 1.1, 7.401, 8.5, 10.2, 10.801, 21.201]) {
+        const index = Math.floor(seconds * rotation.fps) % rotation.frames;
+        const state = await positions(page, seconds);
+        assert.equal(state.turn.x, -(index % rotation.columns) * g.size || 0, 'Rotation never pauses or resets at a scan phase boundary');
+        assert.equal(state.turn.y, -Math.floor(index / rotation.columns) * g.size || 0);
+      }
       await page.emulateMedia({ reducedMotion: 'reduce' });
       assert.equal(await page.evaluate(() => document.getAnimations().length), 0, 'Direct SVG reduced motion');
       assert((await page.evaluate(() => [...document.querySelectorAll('.motion')].map(el => getComputedStyle(el).transform))).every(transform => transform === 'none'));
@@ -349,7 +359,7 @@ async function positions(page, seconds) {
       const turnHashes = new Set();
       const portraitArea = { left: g.x, top: g.y, width: g.size, height: g.size };
       for (const state of turnStates) {
-        const image = await frame(page, source, g, state.seconds);
+        const image = await frame(page, source, g, state.seconds, { fullPortrait: true });
         const portraitPixels = await raw(image, portraitArea);
         turnHashes.add(createHash('sha256').update(portraitPixels).digest('hex'));
         let skinPixels = 0;
@@ -359,25 +369,35 @@ async function positions(page, seconds) {
         fs.writeFileSync(path.join(out, name + '-turn-' + String(state.frame).padStart(2, '0') + '.png'), image);
       }
       assert.equal(turnHashes.size, 16, 'All sixteen angles must be distinct');
-      buffers.set(name, full);
       fs.writeFileSync(path.join(out, name + '-full.png'), full);
       for (const [label, reduced, fallback] of [['reduced', true, false], ['fallback', false, true]]) {
         const image = await frame(page, source, g, 10.2, { reduced, fallback });
-        assert.equal(delta(await raw(full), await raw(image)), 0, label + ' must keep all content visible');
         fs.writeFileSync(path.join(out, name + '-' + label + '.png'), image);
+        assert(delta(await raw(full), await raw(image)) <= 2, label + ' must keep all content visible within edge-alpha compositing rounding');
       }
       const openingFrame = await frame(page, source, g, 1.1);
       const erasingFrame = await frame(page, source, g, 8.5);
       const silhouette = await frame(page, source, g, 10.2, { silhouetteOnly: true });
-      silhouetteBuffers.set(name, silhouette);
       const silhouetteVisibility = await faintSilhouette(silhouette, g, theme);
-      await portraitPart(openingFrame, full, g, 'top');
-      await portraitPart(openingFrame, silhouette, g, 'bottom');
-      await portraitPart(erasingFrame, full, g, 'top');
-      await portraitPart(erasingFrame, silhouette, g, 'bottom');
-      const alpha = await portraitAlpha(page, source, g.size);
+      for (const [seconds, image] of [[1.1, openingFrame], [8.5, erasingFrame]]) {
+        await portraitPart(image, await frame(page, source, g, seconds, { fullPortrait: true }), g, 'top');
+        await portraitPart(image, await frame(page, source, g, seconds, { silhouetteOnly: true }), g, 'bottom');
+      }
       const silhouetteChecks = [];
-      for (const seconds of [.55, 1.1, 1.65, 7.95, 8.5, 9.05]) silhouetteChecks.push(await scanCoverage(page, source, g, seconds, alpha));
+      for (const seconds of [.55, 1.1, 1.65, 7.95, 8.5, 9.05]) {
+        const alpha = await portraitAlpha(page, source, g.size, seconds);
+        silhouetteChecks.push(await scanCoverage(page, source, g, seconds, alpha));
+      }
+      const continuousMotion = [];
+      for (const [phase, start] of [['reveal', .35], ['hold', 3.2], ['erase', 8], ['silhouette', 9.9]]) {
+        const first = await frame(page, source, g, start, { silhouetteOnly: true });
+        const next = await frame(page, source, g, start + .3, { silhouetteOnly: true });
+        assert(delta(await raw(first, portraitArea), await raw(next, portraitArea)) > 1, 'Rotation must visibly continue during ' + phase);
+        continuousMotion.push({ phase, rotates: true });
+      }
+      const loopFirst = await frame(page, source, g, .02, { fullPortrait: true });
+      const loopNext = await frame(page, source, g, rotation.durationMs / 1000 + .02, { fullPortrait: true });
+      assert.equal(delta(await raw(loopFirst, portraitArea), await raw(loopNext, portraitArea)), 0, 'Rotation must loop independently of the scan clock');
       const erased = await frame(page, source, g, 10.2);
       await silhouettePortrait(erased, silhouette, g);
       for (const [label, image] of [['opening', openingFrame], ['erasing', erasingFrame], ['silhouette', erased]]) {
@@ -399,13 +419,13 @@ async function positions(page, seconds) {
       fs.writeFileSync(path.join(out, name + '-typing-partial.png'), await frame(page, source, g, 1.2));
       for (const seconds of [0, 10.799, 10.8]) {
         const boundary = await frame(page, source, g, seconds);
-        await silhouettePortrait(boundary, silhouette, g);
+        await faintSilhouette(boundary, g, theme);
         if (seconds === 10.799) await emptyInfo(boundary, mobile, theme);
         else assert((await infoPixels(boundary, mobile, theme)).every(count => count > 0), 'All text starts with the new scan cycle');
       }
       const repeated = await frame(page, source, g, 46.7, { freezeTurn: true });
       assert.equal(delta(await raw(full), await raw(repeated)), 0, 'Both animation cycles must repeat without drift');
-      report.animation.push({ name, portrait: 'fixed frame, sixteen-view turn during hold, top-down reveal and bottom-up erase', portraitPeriodSeconds: 10.8, phaseSeconds: { reveal: 2.2, hold: 5.2, erase: 2.2, idle: 1.2 }, turnStates, uniqueAngles: turnHashes.size, scanDirection: scanStates, silhouetteChecks, silhouetteOpacity: .02, silhouetteVisibility, scanHeight: 4, titlePeriodSeconds: 10.8, characterStepping: typeStates, information: 'parallel whole-character typing and reverse deletion', rowStates, textChecks, erasedPortrait: 'faint silhouette only', emptyInformationPixels: 0, reducedMotion: 'pass', fallback: 'pass', loopBoundary: 'pass' });
+      report.animation.push({ name, portrait: 'continuous 24fps rotation, top-down reveal and bottom-up erase', portraitPeriodSeconds: 10.8, rotationPeriodSeconds: rotation.durationMs / 1000, rotationFrames: rotation.frames, continuousMotion, phaseSeconds: { reveal: 2.2, hold: 5.2, erase: 2.2, idle: 1.2 }, turnStates, uniqueAngles: turnHashes.size, scanDirection: scanStates, silhouetteChecks, silhouetteOpacity: .02, silhouetteVisibility, scanHeight: 4, titlePeriodSeconds: 10.8, characterStepping: typeStates, information: 'parallel whole-character typing and reverse deletion', rowStates, textChecks, erasedPortrait: 'rotating faint silhouette only', emptyInformationPixels: 0, reducedMotion: 'pass', fallback: 'pass', loopBoundary: 'pass' });
       console.log('Validated ' + name + ': parallel character typing, synchronized deletion, stationary glyphs, 2% silhouette and reduced motion');
     }
 
@@ -448,7 +468,7 @@ async function positions(page, seconds) {
         assert.equal(layout.cards.at(-1).width, layout.width, 'The final odd card spans the grid');
       }
       const name = theme + (mobile ? '-mobile' : '');
-      assert.equal(layout.src, name + '.svg' + (reduced ? '#still' : ''));
+      assert.equal(layout.src, name + '.svg?v=' + imageVersion + (reduced ? '#still' : ''));
       assert.equal(layout.reducedButtonDisabled, reduced);
       const textBounds = report.structure.find(item => item.name === name).textBounds;
       const scale = layout.width / geometry(mobile).width;
@@ -506,7 +526,7 @@ async function positions(page, seconds) {
       fs.writeFileSync(path.join(out, 'live-' + seconds.toFixed(1) + 's.png'), image);
       const phase = seconds % 10.8;
       if (phase > 9.6) {
-        await silhouettePortrait(image, silhouetteBuffers.get('dark'), g);
+        await faintSilhouette(image, g, 'dark');
         await emptyInfo(image, false, 'dark');
       }
       if (phase > 2.2 && phase < 7.4) {
@@ -516,7 +536,7 @@ async function positions(page, seconds) {
       if (seconds === 3.66) hold = image;
       if (seconds === 14.46) {
         const area = { left: g.x + 12, top: g.y + 12, width: g.size - 24, height: g.size - 24 };
-        assert.equal(delta(await raw(hold, area), await raw(image, area)), 0, 'Real-time portrait holds must match');
+        assert(delta(await raw(hold, area), await raw(image, area)) > 1, 'Rotation must not restart with the next scan cycle');
       }
       report.cycles.push({ requestedSeconds: seconds, actualSeconds: (performance.now() - start) / 1000, passed: true });
     }

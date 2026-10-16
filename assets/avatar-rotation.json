@@ -1,0 +1,14 @@
+{
+  "image": "avatar-rotation.webp",
+  "mime": "image/webp",
+  "size": 192,
+  "columns": 16,
+  "rows": 8,
+  "frames": 128,
+  "fps": 24,
+  "durationMs": 5333.333333333333,
+  "width": 3072,
+  "height": 1536,
+  "source": "avatar-turntable.json",
+  "interpolation": "FFmpeg minterpolate, motion-compensated RGB and alpha, circular padding"
+}

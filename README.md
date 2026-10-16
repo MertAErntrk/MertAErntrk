@@ -1,12 +1,12 @@
 <picture>
-  <source media="(prefers-reduced-motion: reduce) and (max-width: 767px) and (prefers-color-scheme: dark)" srcset="dark-mobile.svg#still" />
-  <source media="(prefers-reduced-motion: reduce) and (max-width: 767px)" srcset="light-mobile.svg#still" />
-  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="dark.svg#still" />
-  <source media="(prefers-reduced-motion: reduce)" srcset="light.svg#still" />
-  <source media="(max-width: 767px) and (prefers-color-scheme: dark)" srcset="dark-mobile.svg" />
-  <source media="(max-width: 767px)" srcset="light-mobile.svg" />
-  <source media="(prefers-color-scheme: dark)" srcset="dark.svg" />
-  <img src="light.svg" width="100%" alt="Mert Ali ERENTÜRK, Data &amp; AI Engineer. Data pipelines, lakehouse design and LLM applications." />
+  <source media="(prefers-reduced-motion: reduce) and (max-width: 767px) and (prefers-color-scheme: dark)" srcset="dark-mobile.svg?v=9108f2460bb7#still" />
+  <source media="(prefers-reduced-motion: reduce) and (max-width: 767px)" srcset="light-mobile.svg?v=9108f2460bb7#still" />
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="dark.svg?v=9108f2460bb7#still" />
+  <source media="(prefers-reduced-motion: reduce)" srcset="light.svg?v=9108f2460bb7#still" />
+  <source media="(max-width: 767px) and (prefers-color-scheme: dark)" srcset="dark-mobile.svg?v=9108f2460bb7" />
+  <source media="(max-width: 767px)" srcset="light-mobile.svg?v=9108f2460bb7" />
+  <source media="(prefers-color-scheme: dark)" srcset="dark.svg?v=9108f2460bb7" />
+  <img src="light.svg?v=9108f2460bb7" width="100%" alt="Mert Ali ERENTÜRK, Data &amp; AI Engineer. Data pipelines, lakehouse design and LLM applications." />
 </picture>
 
 ## About
